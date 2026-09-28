@@ -23,7 +23,7 @@ export default function PopularBrands() {
             <p className="eyebrow">Popular brands</p>
             <h2 className="popular-brands-title">Start with the badge you trust.</h2>
           </div>
-          <Link href="/cars" className="text-link">Explore all makes →</Link>
+          <Link href="/brands" className="text-link">Explore all makes →</Link>
         </div>
 
         <div className="popular-brands-grid">
