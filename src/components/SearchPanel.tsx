@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { manufacturerNames } from "@/data/manufacturers";
 
 export default function SearchPanel() {
   return (
@@ -7,22 +8,15 @@ export default function SearchPanel() {
         <label>Make</label>
         <select defaultValue="">
           <option value="">All makes</option>
-          <option>BMW</option>
-          <option>Audi</option>
-          <option>Mercedes-Benz</option>
-          <option>Volkswagen</option>
-          <option>Toyota</option>
+          {manufacturerNames.map((manufacturer) => (
+            <option key={manufacturer}>{manufacturer}</option>
+          ))}
         </select>
       </div>
       <div className="field">
         <label>Model</label>
         <select defaultValue="">
           <option value="">All models</option>
-          <option>3 Series</option>
-          <option>A4</option>
-          <option>A-Class</option>
-          <option>Golf</option>
-          <option>RAV4</option>
         </select>
       </div>
       <div className="field">
