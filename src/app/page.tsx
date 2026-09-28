@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck, CarFront, DollarSign, ShieldCheck, Sparkles, Wrench } from "lucide-react";
+import { ArrowRight, BadgeCheck, CarFront, Clock3, DollarSign, MapPin, ShieldCheck, Sparkles, Wrench } from "lucide-react";
 import Header from "@/components/Header";
 import SearchPanel from "@/components/SearchPanel";
 import CarCard from "@/components/CarCard";
@@ -17,16 +17,35 @@ export default function HomePage() {
         <section className="hero">
           <div className="container hero-inner">
             <div className="hero-copy">
-              <div className="hero-kicker">Quality cars. Straightforward buying.</div>
-              <h1>Find your next car.</h1>
+              <div className="hero-pill">
+                <span className="hero-pill-dot" />
+                Japan inventory • USD pricing
+              </div>
+              <div className="hero-kicker">Wild Speed Motors Japan</div>
+              <h1>Find the right car. <span>Skip the ordinary.</span></h1>
               <p>
-                Hand-picked used cars, clear pricing, flexible finance and a buying
-                experience built around you.
+                A digital-first used car showroom built for the U.S. military community in Japan —
+                curated stock, straightforward USD pricing and a faster way to browse.
               </p>
               <div className="hero-actions">
-                <Link href="/cars" className="button-primary">Browse used cars</Link>
-                <a href="#sell" className="button-secondary">Sell your car</a>
+                <Link href="/cars" className="button-primary hero-primary">
+                  Browse inventory <ArrowRight size={17} />
+                </Link>
+                <Link href="/budget" className="button-glass">Enter virtual showroom</Link>
               </div>
+
+              <div className="hero-meta">
+                <span><MapPin size={15} /> Japan-based stock</span>
+                <span><DollarSign size={15} /> Prices in USD</span>
+                <span><Clock3 size={15} /> Browse 24/7</span>
+              </div>
+            </div>
+
+            <div className="hero-sidecard">
+              <span className="hero-sidecard-label">SHOWROOM MODE</span>
+              <strong>Browse the lot your way.</strong>
+              <p>Shop by budget, brand, body style or curated collection.</p>
+              <Link href="/budget">Start with your budget <ArrowRight size={16} /></Link>
             </div>
           </div>
         </section>
@@ -62,8 +81,9 @@ export default function HomePage() {
 
         <CollectionCards />
 
-        <section className="section">
+        <section className="section arrivals-section">
           <div className="container">
+            <div className="arrivals-accent">LATEST STOCK</div>
             <div className="section-head">
               <div>
                 <p className="eyebrow">Latest stock</p>
@@ -81,10 +101,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="section section-soft">
+        <section className="section body-style-section">
           <div className="container">
             <p className="eyebrow">Find the right shape</p>
-            <h2 className="section-title">Shop by body style</h2>
+            <h2 className="section-title">Choose the shape that fits your life.</h2>
             <div className="body-grid" style={{ marginTop: 30 }}>
               {[
                 ["SUV", "Practical, spacious and ready for everyday life"],
