@@ -1,31 +1,42 @@
 import Link from "next/link";
-import { Phone } from "lucide-react";
+import { Phone, ShieldCheck } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="site-header">
-      <div className="container header-inner">
-        <Link href="/" className="brand" aria-label="Wild Speed Motors home">
-          <span className="brand-mark">WS</span>
-          <span className="brand-copy">
-            <strong>WILD SPEED</strong>
-            <span>MOTORS</span>
-          </span>
-        </Link>
-
-        <nav className="nav" aria-label="Main navigation">
-          <Link href="/cars">Used Cars</Link>
-          <Link href="#sell">Sell Your Car</Link>
-          <Link href="#finance">Finance</Link>
-          <Link href="#about">About Us</Link>
-          <Link href="#contact">Contact</Link>
-        </nav>
-
-        <a className="button-primary" href="tel:+440000000000">
-          <Phone size={17} />
-          Call us
-        </a>
+    <>
+      <div className="utility-bar">
+        <div className="container utility-inner">
+          <span><ShieldCheck size={14} /> Built for the U.S. military community in Japan</span>
+          <span>USD pricing • Japan-based inventory</span>
+        </div>
       </div>
-    </header>
+
+      <header className="site-header">
+        <div className="container header-inner">
+          <Link href="/" className="brand" aria-label="Wild Speed Motors home">
+            <span className="brand-mark">
+              <span>WS</span>
+            </span>
+            <span className="brand-copy">
+              <strong>WILD SPEED</strong>
+              <span>MOTORS JAPAN</span>
+            </span>
+          </Link>
+
+          <nav className="nav" aria-label="Main navigation">
+            <Link href="/cars">Used Cars</Link>
+            <Link href="/budget">Browse by Budget</Link>
+            <Link href="/collections">Collections</Link>
+            <Link href="#finance">Finance</Link>
+            <Link href="#contact">Contact</Link>
+          </nav>
+
+          <a className="header-call" href="tel:+440000000000">
+            <Phone size={16} />
+            <span>Call showroom</span>
+          </a>
+        </div>
+      </header>
+    </>
   );
 }
