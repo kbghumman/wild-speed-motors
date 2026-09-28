@@ -12,6 +12,7 @@ export function generateStaticParams() {
 export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const collection = getCollection(slug);
+
   if (!collection) notFound();
 
   const matchingCars = getCarsForCollection(slug, cars);
@@ -27,11 +28,17 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
             <p>{collection.description}</p>
           </div>
         </section>
+
         <section className="section">
           <div className="container">
-            <div className="inventory-top"><strong>{matchingCars.length} matching cars</strong></div>
+            <div className="inventory-top">
+              <strong>{matchingCars.length} matching cars</strong>
+            </div>
+
             {matchingCars.length > 0 ? (
-              <div className="cars-grid">{matchingCars.map((car) => <CarCard key={car.slug} car={car} />)}</div>
+              <div className="cars-grid">
+                {matchingCars.map((car) => <CarCard key={car.slug} car={car} />)}
+              </div>
             ) : (
               <div className="empty-state">
                 <h2>No matching demo stock yet</h2>
