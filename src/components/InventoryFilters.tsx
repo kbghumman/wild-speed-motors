@@ -36,7 +36,7 @@ export default function InventoryFilters() {
         ["Body type", ["Any body type", "SUV", "Hatchback", "Saloon", "Coupe"]],
         ["Transmission", ["Any", "Automatic", "Manual"]],
         ["Fuel", ["Any", "Petrol", "Diesel", "Hybrid", "Electric"]],
-        ["Max price", ["Any price", "£15,000", "£20,000", "£25,000", "£30,000"]],
+        ["Max price", ["Any price", "$2,500", "$5,000", "$10,000", "$20,000", "$30,000", "$40,000"]],
       ].map(([label, options]) => (
         <div className="filter-group" key={label as string}>
           <label>{label as string}</label>
