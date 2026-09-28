@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import CarCard from "@/components/CarCard";
 import { cars } from "@/data/cars";
+import { manufacturerNames } from "@/data/manufacturers";
 
 export default function CarsPage() {
   return (
@@ -19,8 +20,18 @@ export default function CarsPage() {
           <div className="container inventory-layout">
             <aside className="filters">
               <h3>Filter cars</h3>
+
+              <div className="filter-group">
+                <label>Make</label>
+                <select defaultValue="">
+                  <option value="">All makes</option>
+                  {manufacturerNames.map((manufacturer) => (
+                    <option key={manufacturer}>{manufacturer}</option>
+                  ))}
+                </select>
+              </div>
+
               {[
-                ["Make", ["All makes", "BMW", "Audi", "Mercedes-Benz", "Toyota", "Volkswagen"]],
                 ["Body type", ["Any body type", "SUV", "Hatchback", "Saloon", "Coupe"]],
                 ["Transmission", ["Any", "Automatic", "Manual"]],
                 ["Fuel", ["Any", "Petrol", "Diesel", "Hybrid", "Electric"]],
