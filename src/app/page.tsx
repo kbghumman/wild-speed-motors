@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import SearchPanel from "@/components/SearchPanel";
 import CarCard from "@/components/CarCard";
 import PopularBrands from "@/components/PopularBrands";
+import CollectionCards from "@/components/CollectionCards";
 import { cars } from "@/data/cars";
 
 export default function HomePage() {
@@ -55,6 +56,8 @@ export default function HomePage() {
         </section>
 
         <PopularBrands />
+
+        <CollectionCards />
 
         <section className="section">
           <div className="container">
