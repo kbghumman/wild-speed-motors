@@ -12,6 +12,7 @@ export function generateStaticParams() {
 export default async function BudgetBayPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const bay = getBudgetBay(slug);
+
   if (!bay) notFound();
 
   const matchingCars = getCarsForBudgetBay(slug, cars);
@@ -27,15 +28,21 @@ export default async function BudgetBayPage({ params }: { params: Promise<{ slug
             <p>{bay.description}</p>
           </div>
         </section>
+
         <section className="section">
           <div className="container">
-            <div className="inventory-top"><strong>{matchingCars.length} cars in this bay</strong></div>
+            <div className="inventory-top">
+              <strong>{matchingCars.length} cars in this bay</strong>
+            </div>
+
             {matchingCars.length > 0 ? (
-              <div className="cars-grid">{matchingCars.map((car) => <CarCard key={car.slug} car={car} />)}</div>
+              <div className="cars-grid">
+                {matchingCars.map((car) => <CarCard key={car.slug} car={car} />)}
+              </div>
             ) : (
               <div className="empty-state">
                 <h2>No demo cars in this bay yet</h2>
-                <p>Real inventory will appear here automatically when a car's price falls inside this range.</p>
+                <p>Real inventory will appear here automatically when a car&apos;s price falls inside this range.</p>
               </div>
             )}
           </div>
