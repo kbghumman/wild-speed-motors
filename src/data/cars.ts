@@ -6,7 +6,6 @@ export type Car = {
   year: number;
   mileage: number;
   price: number;
-  priceUsd?: number;
   monthly: number;
   fuel: string;
   transmission: string;
@@ -23,8 +22,8 @@ export const cars: Car[] = [
     trim: "320i M Sport",
     year: 2021,
     mileage: 28400,
-    price: 24995,
-    monthly: 419,
+    price: 3280000,
+    monthly: 54800,
     fuel: "Petrol",
     transmission: "Automatic",
     body: "Saloon",
@@ -39,8 +38,8 @@ export const cars: Car[] = [
     trim: "S line",
     year: 2020,
     mileage: 35100,
-    price: 22995,
-    monthly: 385,
+    price: 2980000,
+    monthly: 49800,
     fuel: "Diesel",
     transmission: "Automatic",
     body: "Saloon",
@@ -55,8 +54,8 @@ export const cars: Car[] = [
     trim: "A200 AMG Line",
     year: 2021,
     mileage: 29750,
-    price: 23995,
-    monthly: 399,
+    price: 3180000,
+    monthly: 52800,
     fuel: "Petrol",
     transmission: "Automatic",
     body: "Hatchback",
@@ -71,8 +70,8 @@ export const cars: Car[] = [
     trim: "R-Line",
     year: 2022,
     mileage: 22100,
-    price: 21495,
-    monthly: 359,
+    price: 2880000,
+    monthly: 47800,
     fuel: "Petrol",
     transmission: "Automatic",
     body: "Hatchback",
@@ -87,8 +86,8 @@ export const cars: Car[] = [
     trim: "Design Hybrid",
     year: 2021,
     mileage: 31300,
-    price: 27995,
-    monthly: 465,
+    price: 3680000,
+    monthly: 59800,
     fuel: "Hybrid",
     transmission: "Automatic",
     body: "SUV",
@@ -103,8 +102,8 @@ export const cars: Car[] = [
     trim: "R-Dynamic",
     year: 2020,
     mileage: 38600,
-    price: 29995,
-    monthly: 499,
+    price: 4280000,
+    monthly: 69800,
     fuel: "Diesel",
     transmission: "Automatic",
     body: "SUV",
