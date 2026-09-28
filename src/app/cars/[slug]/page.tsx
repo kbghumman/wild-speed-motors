@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
 import { cars } from "@/data/cars";
+import { formatUSD } from "@/lib/currency";
 
 export function generateStaticParams() {
   return cars.map((car) => ({ slug: car.slug }));
@@ -19,7 +20,7 @@ export default async function CarDetailPage({
 
   const specs = [
     ["Year", car.year],
-    ["Mileage", `${car.mileage.toLocaleString()} miles`],
+    ["Mileage", `${car.mileage.toLocaleString()} km`],
     ["Transmission", car.transmission],
     ["Fuel", car.fuel],
     ["Engine", car.engine],
@@ -58,9 +59,9 @@ export default async function CarDetailPage({
               <h1>{car.model}</h1>
               <p className="car-trim">{car.trim}</p>
 
-              <div className="price">£{car.price.toLocaleString()}</div>
+              <div className="price">{formatUSD(car.price)}</div>
               <p style={{ color: "#64748b", marginTop: 4 }}>
-                Indicative from <strong style={{ color: "#2563eb" }}>£{car.monthly}/month</strong>
+                Indicative from <strong style={{ color: "#2563eb" }}>{formatUSD(car.monthly)}/month</strong>
               </p>
 
               <div className="detail-actions">
