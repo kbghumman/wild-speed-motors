@@ -1,58 +1,47 @@
 import Link from "next/link";
-import { ArrowUpRight, BadgeDollarSign, Gauge, Repeat2 } from "lucide-react";
-
-const items = [
-  {
-    href: "/collections",
-    className: "home-feature-card feature-performance",
-    kicker: "Drive your way",
-    title: "Collections",
-    copy: "Sports cars, classics, SUVs and electrified stock.",
-    Icon: Gauge,
-  },
-  {
-    href: "/finance",
-    className: "home-feature-card feature-finance",
-    kicker: "Plan your purchase",
-    title: "Finance",
-    copy: "See how the finance journey works before you choose a car.",
-    Icon: BadgeDollarSign,
-  },
-  {
-    href: "/sell",
-    className: "home-feature-card feature-sell",
-    kicker: "Change cars",
-    title: "Sell or trade",
-    copy: "Start a valuation or use your current car toward the next one.",
-    Icon: Repeat2,
-  },
-];
+import { ArrowUpRight, BadgeDollarSign, Repeat2 } from "lucide-react";
+import { CarOutline } from "@/components/AutomotiveArt";
 
 export default function HomeFeatureLinks() {
   return (
-    <section className="section home-feature-section">
+    <section className="section v3-paths-section">
       <div className="container">
-        <div className="section-head">
+        <div className="v3-section-intro">
           <div>
-            <p className="eyebrow">More ways to move</p>
-            <h2 className="section-title">The rest of the showroom has its own space.</h2>
+            <p className="v3-kicker">Beyond the inventory</p>
+            <h2>Three useful next steps.</h2>
           </div>
         </div>
-        <div className="home-feature-grid">
-          {items.map(({ href, className, kicker, title, copy, Icon }) => (
-            <Link href={href} className={className} key={href}>
-              <div className="feature-graphic">
-                <Icon size={30} />
-                <span className="feature-ring feature-ring-one" />
-                <span className="feature-ring feature-ring-two" />
-                <span className="feature-line" />
-              </div>
-              <span className="feature-kicker">{kicker}</span>
-              <strong>{title}</strong>
-              <p>{copy}</p>
-              <span className="feature-link">Explore <ArrowUpRight size={16} /></span>
-            </Link>
-          ))}
+
+        <div className="v3-paths-grid">
+          <Link href="/collections" className="v3-path-card v3-path-main">
+            <div className="v3-path-car-art">
+              <CarOutline variant="sports" className="v3-path-car" />
+              <span className="v3-path-gridline" />
+            </div>
+            <div>
+              <span className="v3-mono">CURATED STOCK</span>
+              <strong>Collections</strong>
+              <p>Sports, classics, SUVs and electrified cars get their own spaces.</p>
+              <span className="v3-card-link">Explore collections <ArrowUpRight size={15} /></span>
+            </div>
+          </Link>
+
+          <Link href="/finance" className="v3-path-card v3-path-small v3-path-finance">
+            <div className="v3-path-icon"><BadgeDollarSign size={26} /></div>
+            <span className="v3-mono">OWNERSHIP</span>
+            <strong>Finance</strong>
+            <p>Understand the buying route before choosing the car.</p>
+            <span className="v3-card-link">Learn more <ArrowUpRight size={15} /></span>
+          </Link>
+
+          <Link href="/sell" className="v3-path-card v3-path-small v3-path-sell">
+            <div className="v3-path-icon"><Repeat2 size={26} /></div>
+            <span className="v3-mono">CHANGE CARS</span>
+            <strong>Sell or trade</strong>
+            <p>Value your current car or use it toward the next one.</p>
+            <span className="v3-card-link">Start here <ArrowUpRight size={15} /></span>
+          </Link>
         </div>
       </div>
     </section>

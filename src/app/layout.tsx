@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Manrope } from "next/font/google";
+import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import "./design-v3.css";
 
-const displayFont = Barlow_Condensed({
+const sans = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-display",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-sans",
   display: "swap",
 });
 
-const bodyFont = Manrope({
+const mono = IBM_Plex_Mono({
   subsets: ["latin"],
-  variable: "--font-body",
+  weight: ["400", "500", "600"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -27,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${displayFont.variable} ${bodyFont.variable}`}>
+    <html lang="en" className={sans.variable + " " + mono.variable}>
       <body>{children}</body>
     </html>
   );

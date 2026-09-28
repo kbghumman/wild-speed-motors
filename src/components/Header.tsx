@@ -1,63 +1,98 @@
 import Link from "next/link";
-import { ArrowUpRight, Search, ShieldCheck } from "lucide-react";
+import {
+  ArrowUpRight,
+  BadgeDollarSign,
+  CarFront,
+  CircleDollarSign,
+  Info,
+  Menu,
+  MessageCircle,
+  Repeat2,
+  Search,
+  Shapes,
+} from "lucide-react";
 
-const navItems = [
-  { href: "/cars", label: "Inventory", sublabel: "All cars" },
-  { href: "/budget", label: "Showroom", sublabel: "By budget" },
-  { href: "/brands", label: "Brands", sublabel: "A–Z directory" },
-  { href: "/collections", label: "Collections", sublabel: "Curated stock" },
-  { href: "/finance", label: "Finance", sublabel: "Buying options" },
-  { href: "/sell", label: "Sell", sublabel: "Trade or value" },
+const showroomLinks = [
+  { href: "/cars", label: "Inventory", copy: "Every car in stock", Icon: CarFront },
+  { href: "/budget", label: "Budget showroom", copy: "Walk the lot by price", Icon: CircleDollarSign },
+  { href: "/brands", label: "Brands", copy: "Browse manufacturers", Icon: Shapes },
+  { href: "/collections", label: "Collections", copy: "Curated ways to shop", Icon: Shapes },
+];
+
+const supportLinks = [
+  { href: "/finance", label: "Finance", Icon: BadgeDollarSign },
+  { href: "/sell", label: "Sell or trade", Icon: Repeat2 },
+  { href: "/about", label: "About", Icon: Info },
+  { href: "/contact", label: "Contact", Icon: MessageCircle },
 ];
 
 export default function Header() {
   return (
-    <>
-      <div className="utility-bar utility-bar-premium">
-        <div className="container utility-inner utility-inner-premium">
-          <span className="utility-message">
-            <ShieldCheck size={13} />
-            U.S. military-focused buying experience in Japan
-          </span>
-          <div className="utility-facts">
-            <span>Japan inventory</span>
-            <span className="utility-separator" />
-            <span>USD pricing</span>
-            <span className="utility-separator" />
-            <Link href="/contact">Contact showroom</Link>
-          </div>
+    <header className="ws-header">
+      <div className="container ws-header-shell">
+        <div className="ws-header-left">
+          <details className="ws-explore">
+            <summary>
+              <Menu size={18} />
+              <span>Explore</span>
+            </summary>
+
+            <div className="ws-mega-menu">
+              <div className="ws-mega-intro">
+                <span className="ws-mono-label">WILD SPEED / JAPAN</span>
+                <h2>Move through the showroom your way.</h2>
+                <p>
+                  Inventory first. Secondary tools stay one level deeper so the site
+                  remains fast to scan and easy to learn.
+                </p>
+              </div>
+
+              <div className="ws-mega-main">
+                {showroomLinks.map(({ href, label, copy, Icon }) => (
+                  <Link href={href} key={href} className="ws-mega-card">
+                    <Icon size={20} />
+                    <span>
+                      <strong>{label}</strong>
+                      <small>{copy}</small>
+                    </span>
+                    <ArrowUpRight size={16} />
+                  </Link>
+                ))}
+              </div>
+
+              <div className="ws-mega-support">
+                <span className="ws-mono-label">Ownership</span>
+                {supportLinks.map(({ href, label, Icon }) => (
+                  <Link href={href} key={href}>
+                    <Icon size={16} />
+                    <span>{label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </details>
+
+          <Link href="/cars" className="ws-inventory-link">
+            Inventory
+            <small>View all cars</small>
+          </Link>
+        </div>
+
+        <Link href="/" className="ws-wordmark" aria-label="Wild Speed Motors home">
+          <strong>WILD SPEED</strong>
+          <span>MOTORS / JAPAN</span>
+        </Link>
+
+        <div className="ws-header-actions">
+          <Link href="/cars" className="ws-icon-action" aria-label="Search inventory">
+            <Search size={19} />
+          </Link>
+          <Link href="/contact" className="ws-contact-action">
+            Contact
+            <ArrowUpRight size={15} />
+          </Link>
         </div>
       </div>
-
-      <header className="site-header site-header-premium">
-        <div className="container header-inner header-inner-premium">
-          <Link href="/" className="brand brand-premium" aria-label="Wild Speed Motors home">
-            <span className="brand-monogram">WS</span>
-            <span className="brand-wordmark">
-              <strong>WILD SPEED</strong>
-              <small>MOTORS / JAPAN</small>
-            </span>
-          </Link>
-
-          <nav className="nav nav-premium" aria-label="Main navigation">
-            {navItems.map((item) => (
-              <Link key={item.href} href={item.href} className="nav-premium-link">
-                <span>{item.label}</span>
-                <small>{item.sublabel}</small>
-              </Link>
-            ))}
-          </nav>
-
-          <Link className="header-find-car" href="/cars">
-            <span className="header-find-icon"><Search size={16} /></span>
-            <span className="header-find-copy">
-              <small>Search stock</small>
-              <strong>Find a car</strong>
-            </span>
-            <ArrowUpRight size={16} />
-          </Link>
-        </div>
-      </header>
-    </>
+    </header>
   );
 }

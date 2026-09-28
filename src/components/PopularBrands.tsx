@@ -1,42 +1,67 @@
 import Link from "next/link";
 
 const popularBrands = [
-  ["BMW", "BMW"],
-  ["Mercedes-Benz", "MB"],
-  ["Audi", "AUDI"],
-  ["Toyota", "TOY"],
-  ["Honda", "HON"],
-  ["Mitsubishi", "MITS"],
-  ["Nissan", "NIS"],
-  ["Subaru", "SUB"],
-  ["Mazda", "MAZ"],
-  ["Lexus", "LEX"],
-  ["MINI", "MINI"],
+  "BMW",
+  "Mercedes-Benz",
+  "Audi",
+  "Toyota",
+  "Honda",
+  "Mitsubishi",
+  "Nissan",
+  "Subaru",
+  "Mazda",
+  "Lexus",
+  "MINI",
 ];
+
+const featured = popularBrands.slice(0, 4);
+const shelf = popularBrands.slice(4);
+
+function markFor(brand: string) {
+  if (brand === "Mercedes-Benz") return "MB";
+  if (brand === "Mitsubishi") return "MMC";
+  return brand.slice(0, 3).toUpperCase();
+}
 
 export default function PopularBrands() {
   return (
-    <section className="popular-brands">
+    <section className="section v3-brands-section">
       <div className="container">
-        <div className="popular-brands-head">
+        <div className="v3-section-intro">
           <div>
-            <p className="eyebrow">Popular brands</p>
-            <h2 className="popular-brands-title">Start with the badge you trust.</h2>
+            <p className="v3-kicker">Popular brands</p>
+            <h2>Start with the badge.</h2>
           </div>
-          <Link href="/brands" className="text-link">Explore all makes →</Link>
+          <div className="v3-section-intro-copy">
+            <p>Eleven popular manufacturers, with the full Japan-market directory one click deeper.</p>
+            <Link href="/brands">All manufacturers →</Link>
+          </div>
         </div>
 
-        <div className="popular-brands-grid">
-          {popularBrands.map(([brand, mark]) => (
-            <Link
-              key={brand}
-              href={`/cars?make=${encodeURIComponent(brand)}`}
-              className="popular-brand-card"
-            >
-              <span className="brand-orb">{mark}</span>
-              <span className="brand-name">{brand}</span>
-            </Link>
-          ))}
+        <div className="v3-brand-stage">
+          <div className="v3-brand-featured">
+            {featured.map((brand, index) => (
+              <Link
+                href={"/cars?make=" + encodeURIComponent(brand)}
+                className="v3-brand-feature"
+                key={brand}
+              >
+                <span className="v3-brand-mark">{markFor(brand)}</span>
+                <span className="v3-brand-index">0{index + 1}</span>
+                <strong>{brand}</strong>
+                <small>Browse stock</small>
+              </Link>
+            ))}
+          </div>
+
+          <div className="v3-brand-shelf">
+            {shelf.map((brand) => (
+              <Link href={"/cars?make=" + encodeURIComponent(brand)} key={brand}>
+                <span>{markFor(brand)}</span>
+                <strong>{brand}</strong>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </section>
