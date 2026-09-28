@@ -1,38 +1,60 @@
 import Link from "next/link";
-import { Phone, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, Search, ShieldCheck } from "lucide-react";
+
+const navItems = [
+  { href: "/cars", label: "Inventory", sublabel: "All cars" },
+  { href: "/budget", label: "Showroom", sublabel: "By budget" },
+  { href: "/brands", label: "Brands", sublabel: "A–Z directory" },
+  { href: "/collections", label: "Collections", sublabel: "Curated stock" },
+  { href: "/finance", label: "Finance", sublabel: "Buying options" },
+  { href: "/sell", label: "Sell", sublabel: "Trade or value" },
+];
 
 export default function Header() {
   return (
     <>
-      <div className="utility-bar">
-        <div className="container utility-inner">
-          <span><ShieldCheck size={14} /> Built for the U.S. military community in Japan</span>
-          <span>USD pricing • Japan-based inventory</span>
+      <div className="utility-bar utility-bar-premium">
+        <div className="container utility-inner utility-inner-premium">
+          <span className="utility-message">
+            <ShieldCheck size={13} />
+            U.S. military-focused buying experience in Japan
+          </span>
+          <div className="utility-facts">
+            <span>Japan inventory</span>
+            <span className="utility-separator" />
+            <span>USD pricing</span>
+            <span className="utility-separator" />
+            <Link href="/contact">Contact showroom</Link>
+          </div>
         </div>
       </div>
 
-      <header className="site-header">
-        <div className="container header-inner">
-          <Link href="/" className="brand" aria-label="Wild Speed Motors home">
-            <span className="brand-mark"><span>WS</span></span>
-            <span className="brand-copy">
+      <header className="site-header site-header-premium">
+        <div className="container header-inner header-inner-premium">
+          <Link href="/" className="brand brand-premium" aria-label="Wild Speed Motors home">
+            <span className="brand-monogram">WS</span>
+            <span className="brand-wordmark">
               <strong>WILD SPEED</strong>
-              <span>MOTORS JAPAN</span>
+              <small>MOTORS / JAPAN</small>
             </span>
           </Link>
 
-          <nav className="nav" aria-label="Main navigation">
-            <Link href="/cars">Used Cars</Link>
-            <Link href="/budget">Budget</Link>
-            <Link href="/brands">Brands</Link>
-            <Link href="/collections">Collections</Link>
-            <Link href="/finance">Finance</Link>
-            <Link href="/sell">Sell</Link>
+          <nav className="nav nav-premium" aria-label="Main navigation">
+            {navItems.map((item) => (
+              <Link key={item.href} href={item.href} className="nav-premium-link">
+                <span>{item.label}</span>
+                <small>{item.sublabel}</small>
+              </Link>
+            ))}
           </nav>
 
-          <Link className="header-call" href="/contact">
-            <Phone size={16} />
-            <span>Contact</span>
+          <Link className="header-find-car" href="/cars">
+            <span className="header-find-icon"><Search size={16} /></span>
+            <span className="header-find-copy">
+              <small>Search stock</small>
+              <strong>Find a car</strong>
+            </span>
+            <ArrowUpRight size={16} />
           </Link>
         </div>
       </header>
