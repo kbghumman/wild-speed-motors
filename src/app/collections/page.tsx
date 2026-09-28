@@ -1,38 +1,31 @@
-import Link from "next/link";
 import Header from "@/components/Header";
-import { collections } from "@/data/collections";
+import SiteFooter from "@/components/SiteFooter";
+import CollectionCards from "@/components/CollectionCards";
 
 export default function CollectionsPage() {
   return (
     <>
       <Header />
       <main>
-        <section className="page-hero">
-          <div className="container">
-            <p className="eyebrow" style={{ color: "#93c5fd" }}>Browse stock your way</p>
-            <h1>Car collections</h1>
-            <p>
-              Browse Wild Speed Motors stock by budget, vehicle type, performance and special-interest categories.
-            </p>
+        <section className="editorial-hero collections-page-hero">
+          <div className="container editorial-hero-grid">
+            <div>
+              <p className="eyebrow">Curated inventory</p>
+              <h1>Shop by <span>personality.</span></h1>
+              <p>Performance, classics, capability and electrified cars get their own dedicated spaces.</p>
+            </div>
+            <div className="hero-graphic collections-graphic">
+              <span className="collection-shape shape-red" />
+              <span className="collection-shape shape-gold" />
+              <span className="collection-shape shape-green" />
+              <span className="collection-shape shape-cyan" />
+            </div>
           </div>
         </section>
 
-        <section className="section">
-          <div className="container collection-grid">
-            {collections.map((collection) => (
-              <Link
-                key={collection.slug}
-                href={`/collections/${collection.slug}`}
-                className="collection-card collection-card-large"
-              >
-                <span className="collection-eyebrow">{collection.eyebrow}</span>
-                <strong>{collection.title}</strong>
-                <span>{collection.description}</span>
-              </Link>
-            ))}
-          </div>
-        </section>
+        <CollectionCards />
       </main>
+      <SiteFooter />
     </>
   );
 }
