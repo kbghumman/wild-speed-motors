@@ -1,24 +1,36 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import { manufacturerNames } from "@/data/manufacturers";
+import { getModelsForManufacturer } from "@/data/models";
 
 export default function SearchPanel() {
+  const [make, setMake] = useState("");
+  const models = getModelsForManufacturer(make);
+
   return (
     <div className="search-panel">
       <div className="field">
         <label>Make</label>
-        <select defaultValue="">
+        <select value={make} onChange={(event) => setMake(event.target.value)}>
           <option value="">All makes</option>
           {manufacturerNames.map((manufacturer) => (
-            <option key={manufacturer}>{manufacturer}</option>
+            <option key={manufacturer} value={manufacturer}>{manufacturer}</option>
           ))}
         </select>
       </div>
+
       <div className="field">
         <label>Model</label>
-        <select defaultValue="">
-          <option value="">All models</option>
+        <select defaultValue="" disabled={!make}>
+          <option value="">{make ? "All models" : "Choose a make first"}</option>
+          {models.map((model) => (
+            <option key={model} value={model}>{model}</option>
+          ))}
         </select>
       </div>
+
       <div className="field">
         <label>Budget</label>
         <select defaultValue="">
@@ -29,6 +41,7 @@ export default function SearchPanel() {
           <option>Under £30,000</option>
         </select>
       </div>
+
       <div className="field">
         <label>Body type</label>
         <select defaultValue="">
@@ -39,6 +52,7 @@ export default function SearchPanel() {
           <option>Coupe</option>
         </select>
       </div>
+
       <Link className="search-button" href="/cars">
         Search Cars
       </Link>
