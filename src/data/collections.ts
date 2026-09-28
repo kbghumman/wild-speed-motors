@@ -26,7 +26,7 @@ export const collections: Collection[] = [
     shortTitle: "Under $2,000",
     eyebrow: "Budget buys",
     description: "Low-cost used cars for buyers who want to keep the purchase price as low as possible.",
-    rule: (car) => car.price <= 2000,
+    rule: (car) => typeof car.priceUsd === "number" && car.priceUsd <= 2000,
   },
   {
     slug: "under-5000",
@@ -34,7 +34,7 @@ export const collections: Collection[] = [
     shortTitle: "Under $5,000",
     eyebrow: "Affordable cars",
     description: "Affordable used cars that balance purchase price, practicality and everyday usability.",
-    rule: (car) => car.price <= 5000,
+    rule: (car) => typeof car.priceUsd === "number" && car.priceUsd <= 5000,
   },
   {
     slug: "sports-cars",
