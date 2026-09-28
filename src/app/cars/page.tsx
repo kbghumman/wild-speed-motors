@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import SiteFooter from "@/components/SiteFooter";
 import CarCard from "@/components/CarCard";
 import InventoryFilters from "@/components/InventoryFilters";
 import { cars } from "@/data/cars";
@@ -8,18 +9,17 @@ export default function CarsPage() {
     <>
       <Header />
       <main>
-        <section className="page-hero">
+        <section className="page-hero inventory-hero">
           <div className="container">
-            <p className="eyebrow" style={{ color: "#93c5fd" }}>Wild Speed Motors stock</p>
+            <p className="eyebrow" style={{ color: "#a7f3d0" }}>Live showroom inventory</p>
             <h1>Used cars</h1>
-            <p>Browse our current stock by manufacturer, model, body type, transmission, fuel and budget.</p>
+            <p>Browse current stock by manufacturer, model, body type, transmission, fuel and USD budget.</p>
           </div>
         </section>
 
         <section className="section">
           <div className="container inventory-layout">
             <InventoryFilters />
-
             <div>
               <div className="inventory-top">
                 <strong>{cars.length} cars available</strong>
@@ -30,7 +30,6 @@ export default function CarsPage() {
                   <option value="mileage">Lowest mileage</option>
                 </select>
               </div>
-
               <div className="cars-grid">
                 {cars.map((car) => <CarCard key={car.slug} car={car} />)}
               </div>
@@ -38,6 +37,7 @@ export default function CarsPage() {
           </div>
         </section>
       </main>
+      <SiteFooter />
     </>
   );
 }
