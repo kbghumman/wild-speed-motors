@@ -14,9 +14,7 @@ export default function Header() {
       <header className="site-header">
         <div className="container header-inner">
           <Link href="/" className="brand" aria-label="Wild Speed Motors home">
-            <span className="brand-mark">
-              <span>WS</span>
-            </span>
+            <span className="brand-mark"><span>WS</span></span>
             <span className="brand-copy">
               <strong>WILD SPEED</strong>
               <span>MOTORS JAPAN</span>
@@ -25,16 +23,17 @@ export default function Header() {
 
           <nav className="nav" aria-label="Main navigation">
             <Link href="/cars">Used Cars</Link>
-            <Link href="/budget">Browse by Budget</Link>
+            <Link href="/budget">Budget</Link>
+            <Link href="/brands">Brands</Link>
             <Link href="/collections">Collections</Link>
-            <Link href="#finance">Finance</Link>
-            <Link href="#contact">Contact</Link>
+            <Link href="/finance">Finance</Link>
+            <Link href="/sell">Sell</Link>
           </nav>
 
-          <a className="header-call" href="tel:+440000000000">
+          <Link className="header-call" href="/contact">
             <Phone size={16} />
-            <span>Call showroom</span>
-          </a>
+            <span>Contact</span>
+          </Link>
         </div>
       </header>
     </>
