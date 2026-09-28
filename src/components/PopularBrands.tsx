@@ -1,17 +1,17 @@
 import Link from "next/link";
 
 const popularBrands = [
-  "BMW",
-  "Mercedes-Benz",
-  "Audi",
-  "Toyota",
-  "Honda",
-  "Mitsubishi",
-  "Nissan",
-  "Subaru",
-  "Mazda",
-  "Lexus",
-  "MINI",
+  ["BMW", "BMW"],
+  ["Mercedes-Benz", "MB"],
+  ["Audi", "AUDI"],
+  ["Toyota", "TOY"],
+  ["Honda", "HON"],
+  ["Mitsubishi", "MITS"],
+  ["Nissan", "NIS"],
+  ["Subaru", "SUB"],
+  ["Mazda", "MAZ"],
+  ["Lexus", "LEX"],
+  ["MINI", "MINI"],
 ];
 
 export default function PopularBrands() {
@@ -21,19 +21,20 @@ export default function PopularBrands() {
         <div className="popular-brands-head">
           <div>
             <p className="eyebrow">Popular brands</p>
-            <h2 className="popular-brands-title">Shop by manufacturer</h2>
+            <h2 className="popular-brands-title">Start with the badge you trust.</h2>
           </div>
-          <Link href="/cars" className="popular-brands-all">View all brands</Link>
+          <Link href="/cars" className="text-link">Explore all makes →</Link>
         </div>
 
         <div className="popular-brands-grid">
-          {popularBrands.map((brand) => (
+          {popularBrands.map(([brand, mark]) => (
             <Link
               key={brand}
               href={`/cars?make=${encodeURIComponent(brand)}`}
               className="popular-brand-card"
             >
-              <span>{brand}</span>
+              <span className="brand-orb">{mark}</span>
+              <span className="brand-name">{brand}</span>
             </Link>
           ))}
         </div>
