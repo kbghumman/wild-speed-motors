@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck, CarFront, CirclePoundSterling, ShieldCheck, Sparkles, Wrench } from "lucide-react";
+import { BadgeCheck, CarFront, PoundSterling, ShieldCheck, Sparkles, Wrench } from "lucide-react";
 import Header from "@/components/Header";
 import SearchPanel from "@/components/SearchPanel";
 import CarCard from "@/components/CarCard";
@@ -42,7 +42,7 @@ export default function HomePage() {
                 <div><strong>Warranty options</strong><span>Extra reassurance after you drive away.</span></div>
               </div>
               <div className="trust-item">
-                <span className="trust-icon"><CirclePoundSterling size={19} /></span>
+                <span className="trust-icon"><PoundSterling size={19} /></span>
                 <div><strong>Flexible finance</strong><span>Explore payments that fit your budget.</span></div>
               </div>
               <div className="trust-item">
