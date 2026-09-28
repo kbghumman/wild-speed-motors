@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Car } from "@/data/cars";
+import { formatUSD } from "@/lib/currency";
 
 export default function CarCard({ car }: { car: Car }) {
   return (
@@ -17,17 +18,17 @@ export default function CarCard({ car }: { car: Car }) {
         <p className="car-trim">{car.trim}</p>
 
         <div className="car-specs">
-          <span>{car.mileage.toLocaleString()} miles</span>
+          <span>{car.mileage.toLocaleString()} km</span>
           <span>{car.transmission}</span>
           <span>{car.fuel}</span>
           <span>{car.engine}</span>
         </div>
 
         <div className="car-price-row">
-          <div className="car-price">£{car.price.toLocaleString()}</div>
+          <div className="car-price">{formatUSD(car.price)}</div>
           <div className="car-monthly">
             from
-            <strong>£{car.monthly}/mo</strong>
+            <strong>{formatUSD(car.monthly)}/mo</strong>
           </div>
         </div>
       </div>
