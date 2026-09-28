@@ -3,6 +3,7 @@ import { BadgeCheck, CarFront, PoundSterling, ShieldCheck, Sparkles, Wrench } fr
 import Header from "@/components/Header";
 import SearchPanel from "@/components/SearchPanel";
 import CarCard from "@/components/CarCard";
+import PopularBrands from "@/components/PopularBrands";
 import { cars } from "@/data/cars";
 
 export default function HomePage() {
@@ -52,6 +53,8 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        <PopularBrands />
 
         <section className="section">
           <div className="container">
