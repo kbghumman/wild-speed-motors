@@ -35,10 +35,12 @@ export default function SearchPanel() {
         <label>Budget</label>
         <select defaultValue="">
           <option value="">Any price</option>
-          <option>Under £15,000</option>
-          <option>Under £20,000</option>
-          <option>Under £25,000</option>
-          <option>Under £30,000</option>
+          <option>Up to $2,500</option>
+          <option>Up to $5,000</option>
+          <option>Up to $10,000</option>
+          <option>Up to $20,000</option>
+          <option>Up to $30,000</option>
+          <option>$30,000+</option>
         </select>
       </div>
 
