@@ -1,7 +1,7 @@
-export function formatJPY(value: number) {
-  return new Intl.NumberFormat("ja-JP", {
+export function formatUSD(value: number) {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "JPY",
+    currency: "USD",
     maximumFractionDigits: 0,
   }).format(value);
 }
