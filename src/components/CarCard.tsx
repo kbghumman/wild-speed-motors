@@ -5,7 +5,7 @@ export default function CarCard({ car }: { car: Car }) {
   return (
     <Link href={`/cars/${car.slug}`} className="car-card">
       <div className="car-image">
-        <img src={car.image} alt={`${car.make} ${car.model}`} />
+        <img src={car.image} alt={`${car.make} ${car.model}`} loading="lazy" decoding="async" />
         <span className="car-badge">JUST IN</span>
       </div>
 
