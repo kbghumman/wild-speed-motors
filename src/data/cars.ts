@@ -6,6 +6,7 @@ export type Car = {
   year: number;
   mileage: number;
   price: number;
+  priceUsd?: number;
   monthly: number;
   fuel: string;
   transmission: string;
