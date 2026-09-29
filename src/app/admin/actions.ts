@@ -1,6 +1,6 @@
 "use server";
 
-import { redirect } from "next/navigation";
+import { updateTag } from "next/cache";\nimport { redirect } from "next/navigation";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 
@@ -52,4 +52,24 @@ export async function signOut() {
   }
 
   redirect("/admin/login");
+}
+
+
+export async function refreshInventoryCache() {
+  if (!hasSupabaseEnv()) return { ok: false };
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false };
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (!profile || !["admin", "staff"].includes(profile.role)) return { ok: false };
+
+  updateTag("inventory");
+  return { ok: true };
 }

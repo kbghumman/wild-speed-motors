@@ -17,7 +17,7 @@ import { manufacturerNames } from "@/data/manufacturers";
 import { getModelsForManufacturer } from "@/data/models";
 import { budgetBays } from "@/data/budgetBays";
 import { emptyVehicleDraft, type VehicleDraft } from "@/types/inventory";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/client";\nimport { refreshInventoryCache } from "@/app/admin/actions";
 
 type PhotoItem = {
   id: string;

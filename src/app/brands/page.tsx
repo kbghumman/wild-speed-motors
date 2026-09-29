@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+import BrandLogo from "@/components/BrandLogo";
 import { manufacturers } from "@/data/manufacturers";
 
 const japanese = manufacturers.filter((item) => item.market === "Japan");
@@ -8,21 +9,19 @@ const imports = manufacturers.filter((item) => item.market === "Import");
 
 function BrandGroup({ title, subtitle, brands, tone }: { title: string; subtitle: string; brands: typeof manufacturers; tone: string }) {
   return (
-    <section className={`section brand-directory-section ${tone}`}>
+    <section className={"section brand-directory-section " + tone}>
       <div className="container">
-        <div className="section-head">
-          <div>
-            <p className="eyebrow">{subtitle}</p>
-            <h2 className="section-title">{title}</h2>
-          </div>
+        <div className="v3-section-intro">
+          <div><p className="v3-kicker">{subtitle}</p><h2>{title}</h2></div>
+          <div className="v3-section-intro-copy"><p>Select a manufacturer to open its live inventory. Brands without current stock will simply return an empty result.</p></div>
         </div>
-        <div className="brand-directory-grid">
-          {brands.map((brand, index) => (
-            <Link key={brand.name} href={`/cars?make=${encodeURIComponent(brand.name)}`} className="brand-directory-card">
-              <span className="brand-directory-mark">{brand.name.slice(0, 3).toUpperCase()}</span>
-              <span className="brand-directory-index">{String(index + 1).padStart(2, "0")}</span>
+
+        <div className="brand-directory-grid v4-brand-directory-grid">
+          {brands.map((brand) => (
+            <Link key={brand.name} href={"/cars?make=" + encodeURIComponent(brand.name)} className="brand-directory-card v4-brand-directory-card">
+              <BrandLogo brand={brand.name} className="v4-directory-logo" />
               <strong>{brand.name}</strong>
-              <span>Browse available stock →</span>
+              <span>Browse stock →</span>
             </Link>
           ))}
         </div>
@@ -41,7 +40,7 @@ export default function BrandsPage() {
             <div>
               <p className="eyebrow">Manufacturer directory</p>
               <h1>Every badge. <span>One showroom.</span></h1>
-              <p>Browse Japanese and imported brands commonly found in Japan-market used inventory.</p>
+              <p>Browse Japanese and imported manufacturers commonly found in Japan-market used inventory.</p>
             </div>
             <div className="hero-graphic hero-graphic-brands">
               <span className="graphic-disc disc-a">JDM</span>

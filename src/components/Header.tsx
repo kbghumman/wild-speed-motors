@@ -1,98 +1,78 @@
 import Link from "next/link";
 import {
-  ArrowUpRight,
   BadgeDollarSign,
   CarFront,
+  ChevronDown,
   CircleDollarSign,
   Info,
   Menu,
   MessageCircle,
   Repeat2,
-  Search,
   Shapes,
 } from "lucide-react";
 
-const showroomLinks = [
-  { href: "/cars", label: "Inventory", copy: "Every car in stock", Icon: CarFront },
-  { href: "/budget", label: "Budget showroom", copy: "Walk the lot by price", Icon: CircleDollarSign },
-  { href: "/brands", label: "Brands", copy: "Browse manufacturers", Icon: Shapes },
-  { href: "/collections", label: "Collections", copy: "Curated ways to shop", Icon: Shapes },
+const primary = [
+  { href: "/cars", label: "Cars" },
+  { href: "/budget", label: "By budget" },
+  { href: "/brands", label: "Brands" },
+  { href: "/finance", label: "Finance" },
+  { href: "/sell", label: "Sell / trade" },
 ];
 
-const supportLinks = [
-  { href: "/finance", label: "Finance", Icon: BadgeDollarSign },
-  { href: "/sell", label: "Sell or trade", Icon: Repeat2 },
-  { href: "/about", label: "About", Icon: Info },
-  { href: "/contact", label: "Contact", Icon: MessageCircle },
+const secondary = [
+  { href: "/collections", label: "Collections", Icon: Shapes },
+  { href: "/about", label: "About us", Icon: Info },
 ];
 
 export default function Header() {
   return (
-    <header className="ws-header">
-      <div className="container ws-header-shell">
-        <div className="ws-header-left">
-          <details className="ws-explore">
-            <summary>
-              <Menu size={18} />
-              <span>Explore</span>
-            </summary>
+    <>
+      <header className="v4-header">
+        <div className="container v4-header-inner">
+          <Link href="/" className="v4-wordmark" aria-label="Wild Speed Motors home">
+            <span className="v4-wordmark-mark">WS</span>
+            <span>
+              <strong>WILD SPEED</strong>
+              <small>MOTORS / JAPAN</small>
+            </span>
+          </Link>
 
-            <div className="ws-mega-menu">
-              <div className="ws-mega-intro">
-                <span className="ws-mono-label">WILD SPEED / JAPAN</span>
-                <h2>Move through the showroom your way.</h2>
-                <p>
-                  Inventory first. Secondary tools stay one level deeper so the site
-                  remains fast to scan and easy to learn.
-                </p>
-              </div>
+          <nav className="v4-primary-nav" aria-label="Main navigation">
+            {primary.map((item) => <Link href={item.href} key={item.href}>{item.label}</Link>)}
+          </nav>
 
-              <div className="ws-mega-main">
-                {showroomLinks.map(({ href, label, copy, Icon }) => (
-                  <Link href={href} key={href} className="ws-mega-card">
-                    <Icon size={20} />
-                    <span>
-                      <strong>{label}</strong>
-                      <small>{copy}</small>
-                    </span>
-                    <ArrowUpRight size={16} />
-                  </Link>
+          <div className="v4-header-actions">
+            <details className="v4-more-menu">
+              <summary>More <ChevronDown size={14} /></summary>
+              <div className="v4-more-panel">
+                {secondary.map(({ href, label, Icon }) => (
+                  <Link href={href} key={href}><Icon size={16} />{label}</Link>
                 ))}
               </div>
+            </details>
 
-              <div className="ws-mega-support">
-                <span className="ws-mono-label">Ownership</span>
-                {supportLinks.map(({ href, label, Icon }) => (
-                  <Link href={href} key={href}>
-                    <Icon size={16} />
-                    <span>{label}</span>
-                  </Link>
+            <Link href="/contact" className="v4-contact-button">
+              Contact <MessageCircle size={16} />
+            </Link>
+
+            <details className="v4-mobile-menu">
+              <summary aria-label="Open navigation"><Menu size={20} /></summary>
+              <div className="v4-mobile-panel">
+                {[...primary, ...secondary.map(({ href, label }) => ({ href, label })), { href: "/contact", label: "Contact" }].map((item) => (
+                  <Link href={item.href} key={item.href}>{item.label}</Link>
                 ))}
               </div>
-            </div>
-          </details>
-
-          <Link href="/cars" className="ws-inventory-link">
-            Inventory
-            <small>View all cars</small>
-          </Link>
+            </details>
+          </div>
         </div>
+      </header>
 
-        <Link href="/" className="ws-wordmark" aria-label="Wild Speed Motors home">
-          <strong>WILD SPEED</strong>
-          <span>MOTORS / JAPAN</span>
-        </Link>
-
-        <div className="ws-header-actions">
-          <Link href="/cars" className="ws-icon-action" aria-label="Search inventory">
-            <Search size={19} />
-          </Link>
-          <Link href="/contact" className="ws-contact-action">
-            Contact
-            <ArrowUpRight size={15} />
-          </Link>
-        </div>
-      </div>
-    </header>
+      <nav className="v4-mobile-quicknav" aria-label="Quick navigation">
+        <Link href="/cars"><CarFront size={18} /><span>Cars</span></Link>
+        <Link href="/budget"><CircleDollarSign size={18} /><span>Budget</span></Link>
+        <Link href="/finance"><BadgeDollarSign size={18} /><span>Finance</span></Link>
+        <Link href="/sell"><Repeat2 size={18} /><span>Sell</span></Link>
+      </nav>
+    </>
   );
 }

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import type { Car } from "@/data/cars";
@@ -7,8 +8,17 @@ export default function CarCard({ car }: { car: Car }) {
   return (
     <Link href={"/cars/" + car.slug} className="v3-car-card">
       <div className="v3-car-image">
-        <img src={car.image} alt={car.make + " " + car.model} loading="lazy" decoding="async" />
-        <span className="v3-car-status">JUST IN</span>
+        {car.image ? (
+          <Image
+            src={car.image}
+            alt={car.make + " " + car.model}
+            fill
+            sizes="(max-width: 760px) 100vw, (max-width: 1100px) 50vw, 33vw"
+            quality={75}
+            loading="lazy"
+          />
+        ) : <div className="v4-car-image-placeholder">Photo coming soon</div>}
+        <span className="v3-car-status">AVAILABLE</span>
         <span className="v3-car-arrow"><ArrowUpRight size={16} /></span>
       </div>
 
@@ -24,20 +34,14 @@ export default function CarCard({ car }: { car: Car }) {
 
         <div className="v3-car-data">
           <span>{car.mileage.toLocaleString()} KM</span>
-          <span>{car.transmission.toUpperCase()}</span>
-          <span>{car.fuel.toUpperCase()}</span>
-          <span>{car.engine.toUpperCase()}</span>
+          {car.transmission && <span>{car.transmission.toUpperCase()}</span>}
+          {car.fuel && <span>{car.fuel.toUpperCase()}</span>}
+          {car.engine && <span>{car.engine.toUpperCase()}</span>}
         </div>
 
         <div className="v3-car-price-row">
-          <div>
-            <span className="v3-price-label">Cash price</span>
-            <strong>{formatUSD(car.price)}</strong>
-          </div>
-          <div className="v3-monthly">
-            <span>Finance from</span>
-            <strong>{formatUSD(car.monthly)}/mo</strong>
-          </div>
+          <div><span className="v3-price-label">Cash price</span><strong>{formatUSD(car.price)}</strong></div>
+          {car.monthly > 0 && <div className="v3-monthly"><span>Finance from</span><strong>{formatUSD(car.monthly)}/mo</strong></div>}
         </div>
       </div>
     </Link>
