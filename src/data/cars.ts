@@ -1,4 +1,5 @@
 export type Car = {
+  id?: string;
   slug: string;
   make: string;
   model: string;
@@ -12,6 +13,18 @@ export type Car = {
   body: string;
   engine: string;
   image: string;
+  images?: string[];
+  drivetrain?: string;
+  exteriorColor?: string;
+  interiorColor?: string;
+  shakenExpiry?: string;
+  location?: string;
+  condition?: string;
+  description?: string;
+  features?: string[];
+  status?: string;
+  stockNumber?: string;
+  chassisNumber?: string;
 };
 
 export const cars: Car[] = [

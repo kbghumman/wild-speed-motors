@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowLeft, CarFront, LayoutDashboard, Plus, Settings } from "lucide-react";
+import { ArrowLeft, CarFront, LayoutDashboard, LogOut, Plus, Settings } from "lucide-react";
+import { signOut } from "@/app/admin/actions";
 
 export default function AdminShell({
   children,
@@ -38,9 +39,11 @@ export default function AdminShell({
           </span>
         </nav>
 
+        <form action={signOut} className="admin-signout-form"><button type="submit"><LogOut size={15} /> Sign out</button></form>
+
         <div className="admin-sidebar-note">
           <span className="v3-mono">PRIVATE AREA</span>
-          <p>Authentication will be connected before production launch.</p>
+          <p>Only approved staff accounts can access this area.</p>
         </div>
       </aside>
 

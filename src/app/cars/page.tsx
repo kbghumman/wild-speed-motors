@@ -2,9 +2,13 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import CarCard from "@/components/CarCard";
 import InventoryFilters from "@/components/InventoryFilters";
-import { cars } from "@/data/cars";
+import { getPublicCars } from "@/lib/inventory";
 
-export default function CarsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function CarsPage() {
+  const cars = await getPublicCars();
+
   return (
     <>
       <Header />
@@ -16,23 +20,12 @@ export default function CarsPage() {
             <p>Browse current stock by manufacturer, model, body type, transmission, fuel and USD budget.</p>
           </div>
         </section>
-
         <section className="section">
           <div className="container inventory-layout">
             <InventoryFilters />
             <div>
-              <div className="inventory-top">
-                <strong>{cars.length} cars available</strong>
-                <select defaultValue="newest">
-                  <option value="newest">Newest first</option>
-                  <option value="price-low">Price: low to high</option>
-                  <option value="price-high">Price: high to low</option>
-                  <option value="mileage">Lowest mileage</option>
-                </select>
-              </div>
-              <div className="cars-grid">
-                {cars.map((car) => <CarCard key={car.slug} car={car} />)}
-              </div>
+              <div className="inventory-top"><strong>{cars.length} cars available</strong></div>
+              {cars.length ? <div className="cars-grid">{cars.map((car) => <CarCard key={car.slug} car={car} />)}</div> : <div className="empty-state"><h2>No live cars yet</h2><p>Published inventory will appear here automatically.</p></div>}
             </div>
           </div>
         </section>

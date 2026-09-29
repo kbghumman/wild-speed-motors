@@ -1063,3 +1063,130 @@
     display: none;
   }
 }
+
+
+.admin-signout-form {
+  margin-top: auto;
+  padding: 12px 8px 0;
+}
+.admin-signout-form button {
+  display: inline-flex;
+  width: 100%;
+  min-height: 38px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 9px;
+  background: transparent;
+  padding: 0 10px;
+  color: #9ca0a1;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+.admin-sidebar-note { margin-top: 12px; }
+
+.admin-login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(255,99,66,.12), transparent 28%),
+    #17191b;
+  padding: 24px;
+}
+.admin-login-card {
+  width: min(440px, 100%);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 20px;
+  background: #fbfaf7;
+  padding: 34px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.28);
+}
+.admin-login-brand h1 {
+  margin: 8px 0 6px;
+  font-size: 38px;
+  font-weight: 520;
+  letter-spacing: -.055em;
+}
+.admin-login-brand p {
+  margin: 0;
+  color: #777a76;
+  font-size: 11px;
+}
+.admin-login-alert {
+  margin-top: 18px;
+  border-radius: 10px;
+  background: #fff0eb;
+  padding: 11px 12px;
+  color: #8a321f;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.admin-login-form {
+  display: grid;
+  gap: 14px;
+  margin: 24px 0 18px;
+}
+.admin-login-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 9px;
+  font-weight: 650;
+}
+.admin-login-form input {
+  min-height: 46px;
+  border: 1px solid rgba(17,18,20,.14);
+  border-radius: 10px;
+  outline: 0;
+  background: white;
+  padding: 0 12px;
+  font: inherit;
+}
+.admin-login-form button {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 10px;
+  background: #17191b;
+  color: white;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.admin-login-card > a {
+  color: #777a76;
+  font-size: 9px;
+}
+.upload-error,
+.upload-success {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 18px;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 9px;
+  line-height: 1.45;
+}
+.upload-error { background: #fee2e2; color: #991b1b; }
+.upload-success { background: #dcfce7; color: #166534; }
+.admin-stock-placeholder {
+  width: 64px;
+  height: 48px;
+  border-radius: 8px;
+  background: #e5e2db;
+}
+.admin-empty-stock {
+  padding: 38px 20px;
+  color: #777a76;
+  font-size: 11px;
+}
+.status-draft { background: #e5e7eb; color: #374151; }
+.status-reserved { background: #fef3c7; color: #92400e; }
+.status-sold { background: #dbeafe; color: #1e40af; }
+.status-hidden { background: #f3e8ff; color: #6b21a8; }

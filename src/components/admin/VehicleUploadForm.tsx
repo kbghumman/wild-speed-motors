@@ -17,11 +17,14 @@ import { manufacturerNames } from "@/data/manufacturers";
 import { getModelsForManufacturer } from "@/data/models";
 import { budgetBays } from "@/data/budgetBays";
 import { emptyVehicleDraft, type VehicleDraft } from "@/types/inventory";
+import { createClient } from "@/lib/supabase/client";
 
 type PhotoItem = {
   id: string;
   file: File;
   url: string;
+  storagePath?: string;
+  publicUrl?: string;
 };
 
 const steps = [
@@ -65,7 +68,12 @@ export default function VehicleUploadForm() {
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [coverId, setCoverId] = useState("");
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const [vehicleId, setVehicleId] = useState("");
+  const [vehicleSlug, setVehicleSlug] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const supabase = useMemo(() => createClient(), []);
 
   const models = useMemo(
     () => getModelsForManufacturer(draft.make),
@@ -84,7 +92,11 @@ export default function VehicleUploadForm() {
 
   function addFiles(fileList: FileList | File[]) {
     const incoming = Array.from(fileList)
-      .filter((file) => file.type.startsWith("image/"))
+      .filter((file) =>
+        ["image/jpeg", "image/png", "image/webp"].includes(file.type) &&
+        file.size <= 15 * 1024 * 1024,
+      )
+      .slice(0, Math.max(0, 40 - photos.length))
       .map((file) => ({
         id: crypto.randomUUID(),
         file,
@@ -108,14 +120,24 @@ export default function VehicleUploadForm() {
     if (event.dataTransfer.files) addFiles(event.dataTransfer.files);
   }
 
-  function removePhoto(id: string) {
-    setPhotos((current) => {
-      const item = current.find((photo) => photo.id === id);
-      if (item) URL.revokeObjectURL(item.url);
-      const next = current.filter((photo) => photo.id !== id);
-      if (coverId === id) setCoverId(next[0]?.id ?? "");
-      return next;
-    });
+  async function removePhoto(id: string) {
+    const item = photos.find((photo) => photo.id === id);
+
+    if (item?.storagePath && vehicleId) {
+      await supabase.storage.from("vehicle-images").remove([item.storagePath]);
+      await supabase
+        .from("vehicle_images")
+        .delete()
+        .eq("vehicle_id", vehicleId)
+        .eq("storage_path", item.storagePath);
+    }
+
+    if (item) URL.revokeObjectURL(item.url);
+
+    const next = photos.filter((photo) => photo.id !== id);
+    setPhotos(next);
+    if (coverId === id) setCoverId(next[0]?.id ?? "");
+    setSaved(false);
   }
 
   function toggleFeature(feature: string) {
@@ -127,7 +149,156 @@ export default function VehicleUploadForm() {
     );
   }
 
-  function saveDraft() {
+  function makeSlug() {
+    const base = [draft.year, draft.make, draft.model, draft.stockNumber]
+      .filter(Boolean)
+      .join("-")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+
+    return (base || "vehicle") + "-" + crypto.randomUUID().slice(0, 8);
+  }
+
+  async function persistVehicle(publish: boolean) {
+    setSaving(true);
+    setSaveError("");
+    setSaved(false);
+
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        throw new Error("Your dealer session has expired. Sign in again.");
+      }
+
+      const slug = vehicleSlug || makeSlug();
+      const status = publish ? "live" : "draft";
+
+      const payload = {
+        slug,
+        stock_number: draft.stockNumber || null,
+        make: draft.make,
+        model: draft.model,
+        trim: draft.trim || null,
+        year: Number(draft.year),
+        mileage: Number(draft.mileage),
+        price_usd: Number(draft.priceUsd),
+        monthly_usd: draft.monthlyUsd ? Number(draft.monthlyUsd) : null,
+        chassis_number: draft.chassisNumber || null,
+        registration_number: draft.registrationNumber || null,
+        fuel: draft.fuel || null,
+        transmission: draft.transmission || null,
+        drivetrain: draft.drivetrain || null,
+        body: draft.body || null,
+        engine: draft.engine || null,
+        exterior_color: draft.exteriorColor || null,
+        interior_color: draft.interiorColor || null,
+        shaken_expiry: draft.shakenExpiry || null,
+        location: draft.location || null,
+        condition: draft.condition || null,
+        description: draft.description || null,
+        features: draft.features,
+        status,
+        created_by: user.id,
+        published_at: publish ? new Date().toISOString() : null,
+      };
+
+      let id = vehicleId;
+
+      if (id) {
+        const { error } = await supabase.from("vehicles").update(payload).eq("id", id);
+        if (error) throw error;
+      } else {
+        const { data, error } = await supabase
+          .from("vehicles")
+          .insert(payload)
+          .select("id,slug")
+          .single();
+
+        if (error) throw error;
+
+        id = data.id;
+        setVehicleId(data.id);
+        setVehicleSlug(data.slug);
+      }
+
+      const workingPhotos = [...photos];
+
+      for (let index = 0; index < workingPhotos.length; index += 1) {
+        const photo = workingPhotos[index];
+        if (photo.storagePath && photo.publicUrl) continue;
+
+        const extension = photo.file.name.split(".").pop()?.toLowerCase() || "jpg";
+        const path = id + "/" + crypto.randomUUID() + "." + extension;
+
+        const { error: uploadError } = await supabase.storage
+          .from("vehicle-images")
+          .upload(path, photo.file, {
+            cacheControl: "31536000",
+            upsert: false,
+            contentType: photo.file.type,
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicData } = supabase.storage
+          .from("vehicle-images")
+          .getPublicUrl(path);
+
+        workingPhotos[index] = {
+          ...photo,
+          storagePath: path,
+          publicUrl: publicData.publicUrl,
+        };
+      }
+
+      setPhotos(workingPhotos);
+
+      await supabase.from("vehicle_images").delete().eq("vehicle_id", id);
+
+      if (workingPhotos.length) {
+        const { error: imageError } = await supabase.from("vehicle_images").insert(
+          workingPhotos.map((photo, index) => ({
+            vehicle_id: id,
+            storage_path: photo.storagePath,
+            public_url: photo.publicUrl,
+            position: index,
+            is_cover: photo.id === coverId,
+          })),
+        );
+
+        if (imageError) throw imageError;
+      }
+
+      const cover = workingPhotos.find((photo) => photo.id === coverId);
+
+      const { error: coverError } = await supabase
+        .from("vehicles")
+        .update({
+          cover_image_url: cover?.publicUrl ?? workingPhotos[0]?.publicUrl ?? null,
+          status,
+          published_at: publish ? new Date().toISOString() : null,
+        })
+        .eq("id", id);
+
+      if (coverError) throw coverError;
+
+      setDraft((current) => ({ ...current, status }));
+      setSaved(true);
+      localStorage.removeItem("wild-speed-vehicle-draft");
+    } catch (error) {
+      setSaveError(
+        error instanceof Error ? error.message : "Could not save the listing.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function saveLocalBackup() {
     const payload = {
       ...draft,
       photoNames: photos.map((photo) => photo.file.name),
@@ -135,7 +306,6 @@ export default function VehicleUploadForm() {
       savedAt: new Date().toISOString(),
     };
     localStorage.setItem("wild-speed-vehicle-draft", JSON.stringify(payload));
-    setSaved(true);
   }
 
   const canContinue = [
@@ -280,7 +450,7 @@ export default function VehicleUploadForm() {
                 copy="Upload the full set once. The cover photo drives inventory cards; the rest becomes the vehicle gallery."
               />
 
-              <input ref={inputRef} type="file" multiple accept="image/*" onChange={onFileChange} hidden />
+              <input ref={inputRef} type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={onFileChange} hidden />
 
               <div
                 className="photo-dropzone"
@@ -291,7 +461,7 @@ export default function VehicleUploadForm() {
                 <span className="photo-drop-icon"><UploadCloud size={28} /></span>
                 <strong>Drop photos here</strong>
                 <p>or click to select multiple images</p>
-                <small>Recommended: 15–30 photos, landscape, original quality.</small>
+                <small>Recommended: 15–30 photos. JPEG, PNG or WebP, up to 15 MB each.</small>
               </div>
 
               <div className="photo-shot-guide">
@@ -442,7 +612,7 @@ export default function VehicleUploadForm() {
               <FormHeading
                 number="05"
                 title="Review before publishing"
-                copy="This is the final dealer check. The real production publish action will write this record to the inventory database and upload the images to storage."
+                copy="This is the final dealer check. Publishing saves the vehicle to the inventory database and uploads its gallery to Supabase Storage."
               />
 
               <div className="listing-review">
@@ -479,16 +649,18 @@ export default function VehicleUploadForm() {
               <div className="publish-explainer">
                 <CheckCircle2 size={22} />
                 <div>
-                  <strong>What happens when production publishing is connected?</strong>
+                  <strong>Publishing is now database-backed.</strong>
                   <p>
-                    The record is saved once, photos are uploaded once, and the car automatically appears in All Cars,
-                    its manufacturer, its budget bay, and matching collections. Changing status to Reserved or Sold updates
-                    the customer site without rebuilding the listing.
+                    The record is saved once, photos are uploaded once, and a live car automatically appears in All Cars,
+                    its manufacturer, its budget bay, and matching collections. Draft listings remain private in the dealer console.
                   </p>
                 </div>
               </div>
             </>
           )}
+
+          {saveError && <div className="upload-error">{saveError}</div>}
+          {saved && <div className="upload-success"><CheckCircle2 size={15} /> Listing saved successfully.</div>}
 
           <div className="upload-footer">
             <button
@@ -502,9 +674,17 @@ export default function VehicleUploadForm() {
             </button>
 
             <div>
-              <button type="button" className="upload-save" onClick={saveDraft}>
+              <button
+                type="button"
+                className="upload-save"
+                disabled={saving}
+                onClick={() => {
+                  saveLocalBackup();
+                  void persistVehicle(false);
+                }}
+              >
                 <Save size={15} />
-                {saved ? "Draft saved" : "Save draft"}
+                {saving ? "Saving…" : "Save draft"}
               </button>
 
               {step < steps.length - 1 ? (
@@ -518,9 +698,14 @@ export default function VehicleUploadForm() {
                   <ArrowRight size={15} />
                 </button>
               ) : (
-                <button type="button" className="upload-primary" onClick={saveDraft}>
+                <button
+                  type="button"
+                  className="upload-primary"
+                  disabled={saving || !photos.length}
+                  onClick={() => void persistVehicle(true)}
+                >
                   <CheckCircle2 size={15} />
-                  Save publish-ready draft
+                  {saving ? "Publishing…" : "Publish live"}
                 </button>
               )}
             </div>
