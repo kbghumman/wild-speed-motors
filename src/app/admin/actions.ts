@@ -1,6 +1,7 @@
 "use server";
 
-import { updateTag } from "next/cache";\nimport { redirect } from "next/navigation";
+import { updateTag } from "next/cache";
+import { redirect } from "next/navigation";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 

@@ -7,7 +7,7 @@ type BrandLogoProps = {
 
 function Initials({ brand }: { brand: string }) {
   const initials = brand
-    .split(/[\\s-]+/)
+    .split(/[\s-]+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0])
