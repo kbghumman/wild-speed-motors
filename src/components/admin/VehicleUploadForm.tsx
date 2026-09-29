@@ -286,6 +286,10 @@ export default function VehicleUploadForm() {
 
       if (coverError) throw coverError;
 
+      if (publish) {
+        await refreshInventoryCache();
+      }
+
       setDraft((current) => ({ ...current, status }));
       setSaved(true);
       localStorage.removeItem("wild-speed-vehicle-draft");
