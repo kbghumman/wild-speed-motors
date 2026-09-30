@@ -1190,3 +1190,139 @@
 .status-reserved { background: #fef3c7; color: #92400e; }
 .status-sold { background: #dbeafe; color: #1e40af; }
 .status-hidden { background: #f3e8ff; color: #6b21a8; }
+
+
+/* === High-quality vehicle image pipeline === */
+.photo-dropzone.processing {
+  cursor: wait;
+  border-style: solid;
+  border-color: #ff8a70;
+  background: #fff5f1;
+}
+
+.photo-quality-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  gap: 18px;
+  margin-top: 14px;
+  border: 1px solid rgba(17,18,20,.1);
+  border-radius: 14px;
+  background: #fff;
+  padding: 18px;
+}
+
+.photo-quality-panel .v3-mono {
+  color: #ff6342;
+}
+
+.photo-quality-panel strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 13px;
+}
+
+.photo-quality-panel p {
+  max-width: 680px;
+  margin: 6px 0 0;
+  color: #777a76;
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+.photo-quality-spec {
+  border-left: 1px solid rgba(17,18,20,.1);
+  padding-left: 18px;
+}
+
+.photo-quality-spec span,
+.photo-quality-spec small {
+  display: block;
+  color: #8b8e89;
+  font-size: 8px;
+}
+
+.photo-quality-spec strong {
+  margin: 5px 0;
+  font-size: 15px;
+}
+
+.photo-size-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.photo-size-summary > span {
+  border: 1px solid rgba(17,18,20,.1);
+  border-radius: 999px;
+  background: #fbfaf7;
+  padding: 6px 9px;
+  color: #777a76;
+  font-size: 8px;
+}
+
+.photo-size-summary strong {
+  color: #17191b;
+}
+
+.photo-media-messages {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+  border-radius: 10px;
+  background: #fff4e5;
+  padding: 10px 12px;
+  color: #8a5510;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.photo-file-meta {
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  bottom: 7px;
+  z-index: 1;
+  max-width: calc(100% - 78px);
+  border-radius: 8px;
+  background: rgba(17,18,20,.78);
+  padding: 6px 7px;
+  color: white;
+  backdrop-filter: blur(7px);
+}
+
+.photo-file-meta strong,
+.photo-file-meta span,
+.photo-file-meta small {
+  display: block;
+}
+
+.photo-file-meta strong {
+  font-size: 7px;
+}
+
+.photo-file-meta span {
+  margin-top: 2px;
+  color: #ddd;
+  font-size: 6px;
+}
+
+.photo-file-meta small {
+  margin-top: 3px;
+  color: #ffd2c7;
+  font-size: 6px;
+  line-height: 1.25;
+}
+
+@media (max-width: 820px) {
+  .photo-quality-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .photo-quality-spec {
+    border-left: 0;
+    border-top: 1px solid rgba(17,18,20,.1);
+    padding: 12px 0 0;
+  }
+}

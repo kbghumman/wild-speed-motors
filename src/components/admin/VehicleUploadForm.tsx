@@ -20,6 +20,13 @@ import { getCollectionsForCar } from "@/data/collections";
 import { emptyVehicleDraft, type VehicleDraft } from "@/types/inventory";
 import { createClient } from "@/lib/supabase/client";
 import { refreshInventoryCache } from "@/app/admin/actions";
+import {
+  formatBytes,
+  isAcceptedVehicleImage,
+  MAX_SOURCE_BYTES,
+  MAX_VEHICLE_PHOTOS,
+  optimizeVehicleImage,
+} from "@/lib/vehicle-image";
 
 type PhotoItem = {
   id: string;
@@ -27,6 +34,13 @@ type PhotoItem = {
   url: string;
   storagePath?: string;
   publicUrl?: string;
+  sourceKey: string;
+  originalName: string;
+  originalSize: number;
+  width: number;
+  height: number;
+  optimized: boolean;
+  warning?: string;
 };
 
 const steps = [
@@ -74,6 +88,10 @@ export default function VehicleUploadForm() {
   const [saveError, setSaveError] = useState("");
   const [vehicleId, setVehicleId] = useState("");
   const [vehicleSlug, setVehicleSlug] = useState("");
+  const [processingPhotos, setProcessingPhotos] = useState(false);
+  const [processingProgress, setProcessingProgress] = useState({ done: 0, total: 0 });
+  const [mediaMessages, setMediaMessages] = useState<string[]>([]);
+  const [uploadProgress, setUploadProgress] = useState({ done: 0, total: 0 });
   const inputRef = useRef<HTMLInputElement>(null);
   const supabase = useMemo(() => createClient(), []);
 
@@ -103,34 +121,134 @@ export default function VehicleUploadForm() {
     setSaved(false);
   }
 
-  function addFiles(fileList: FileList | File[]) {
-    const incoming = Array.from(fileList)
-      .filter((file) =>
-        ["image/jpeg", "image/png", "image/webp"].includes(file.type) &&
-        file.size <= 15 * 1024 * 1024,
-      )
-      .slice(0, Math.max(0, 40 - photos.length))
-      .map((file) => ({
-        id: crypto.randomUUID(),
-        file,
-        url: URL.createObjectURL(file),
-      }));
+  const photoStats = useMemo(() => {
+    const original = photos.reduce((sum, photo) => sum + photo.originalSize, 0);
+    const upload = photos.reduce((sum, photo) => sum + photo.file.size, 0);
+    return {
+      original,
+      upload,
+      saved: Math.max(0, original - upload),
+    };
+  }, [photos]);
 
-    if (!incoming.length) return;
+  async function addFiles(fileList: FileList | File[]) {
+    if (processingPhotos) return;
 
-    setPhotos((current) => [...current, ...incoming]);
-    setCoverId((current) => current || incoming[0].id);
-    setSaved(false);
+    const selected = Array.from(fileList);
+    const room = Math.max(0, MAX_VEHICLE_PHOTOS - photos.length);
+    const existing = new Set(photos.map((photo) => photo.sourceKey));
+    const messages: string[] = [];
+    const candidates: File[] = [];
+
+    for (const file of selected) {
+      const sourceKey = [file.name, file.size, file.lastModified].join(":");
+
+      if (existing.has(sourceKey)) {
+        messages.push(file.name + " was skipped because it is already selected.");
+        continue;
+      }
+
+      if (!isAcceptedVehicleImage(file)) {
+        messages.push(file.name + " is not a supported image file.");
+        continue;
+      }
+
+      if (file.size > MAX_SOURCE_BYTES) {
+        messages.push(file.name + " is over the 100 MB source limit.");
+        continue;
+      }
+
+      existing.add(sourceKey);
+      candidates.push(file);
+    }
+
+    if (candidates.length > room) {
+      messages.push(
+        (candidates.length - room) +
+          " photo" +
+          (candidates.length - room === 1 ? " was" : "s were") +
+          " skipped because a vehicle can have up to " +
+          MAX_VEHICLE_PHOTOS +
+          " photos.",
+      );
+    }
+
+    const queued = candidates.slice(0, room);
+    setMediaMessages(messages);
+
+    if (!queued.length) return;
+
+    setProcessingPhotos(true);
+    setProcessingProgress({ done: 0, total: queued.length });
+
+    const completed: PhotoItem[] = [];
+    let done = 0;
+
+    try {
+      for (let start = 0; start < queued.length; start += 3) {
+        const batch = queued.slice(start, start + 3);
+        const results = await Promise.all(
+          batch.map(async (file) => {
+            const sourceKey = [file.name, file.size, file.lastModified].join(":");
+
+            try {
+              const result = await optimizeVehicleImage(file);
+              return {
+                ok: true as const,
+                item: {
+                  id: crypto.randomUUID(),
+                  file: result.file,
+                  url: URL.createObjectURL(result.file),
+                  sourceKey,
+                  originalName: file.name,
+                  originalSize: result.originalBytes,
+                  width: result.width,
+                  height: result.height,
+                  optimized: result.optimized,
+                  warning: result.warning,
+                } satisfies PhotoItem,
+              };
+            } catch (error) {
+              return {
+                ok: false as const,
+                message:
+                  file.name +
+                  ": " +
+                  (error instanceof Error ? error.message : "Could not process image."),
+              };
+            }
+          }),
+        );
+
+        for (const result of results) {
+          if (result.ok) completed.push(result.item);
+          else messages.push(result.message);
+          done += 1;
+        }
+
+        setProcessingProgress({ done, total: queued.length });
+      }
+
+      if (completed.length) {
+        setPhotos((current) => [...current, ...completed]);
+        setCoverId((current) => current || completed[0].id);
+        setSaved(false);
+      }
+
+      setMediaMessages([...messages]);
+    } finally {
+      setProcessingPhotos(false);
+    }
   }
 
   function onFileChange(event: ChangeEvent<HTMLInputElement>) {
-    if (event.target.files) addFiles(event.target.files);
+    if (event.target.files) void addFiles(event.target.files);
     event.target.value = "";
   }
 
   function onDrop(event: DragEvent<HTMLDivElement>) {
     event.preventDefault();
-    if (event.dataTransfer.files) addFiles(event.dataTransfer.files);
+    if (event.dataTransfer.files) void addFiles(event.dataTransfer.files);
   }
 
   async function removePhoto(id: string) {
@@ -239,36 +357,83 @@ export default function VehicleUploadForm() {
       }
 
       const workingPhotos = [...photos];
+      const pendingIndexes = workingPhotos
+        .map((photo, index) => ({ photo, index }))
+        .filter(({ photo }) => !photo.storagePath || !photo.publicUrl)
+        .map(({ index }) => index);
 
-      for (let index = 0; index < workingPhotos.length; index += 1) {
-        const photo = workingPhotos[index];
-        if (photo.storagePath && photo.publicUrl) continue;
+      setUploadProgress({ done: 0, total: pendingIndexes.length });
 
-        const extension = photo.file.name.split(".").pop()?.toLowerCase() || "jpg";
-        const path = id + "/" + crypto.randomUUID() + "." + extension;
+      let cursor = 0;
+      let completedUploads = 0;
+      const uploadErrors: string[] = [];
 
-        const { error: uploadError } = await supabase.storage
-          .from("vehicle-images")
-          .upload(path, photo.file, {
-            cacheControl: "31536000",
-            upsert: false,
-            contentType: photo.file.type,
-          });
+      async function uploadWorker() {
+        while (cursor < pendingIndexes.length) {
+          const index = pendingIndexes[cursor];
+          cursor += 1;
+          const photo = workingPhotos[index];
 
-        if (uploadError) throw uploadError;
+          try {
+            const extension =
+              photo.file.type === "image/webp"
+                ? "webp"
+                : photo.file.type === "image/png"
+                  ? "png"
+                  : "jpg";
+            const path = id + "/" + crypto.randomUUID() + "." + extension;
 
-        const { data: publicData } = supabase.storage
-          .from("vehicle-images")
-          .getPublicUrl(path);
+            const { error: uploadError } = await supabase.storage
+              .from("vehicle-images")
+              .upload(path, photo.file, {
+                cacheControl: "31536000",
+                upsert: false,
+                contentType: photo.file.type,
+              });
 
-        workingPhotos[index] = {
-          ...photo,
-          storagePath: path,
-          publicUrl: publicData.publicUrl,
-        };
+            if (uploadError) throw uploadError;
+
+            const { data: publicData } = supabase.storage
+              .from("vehicle-images")
+              .getPublicUrl(path);
+
+            workingPhotos[index] = {
+              ...photo,
+              storagePath: path,
+              publicUrl: publicData.publicUrl,
+            };
+          } catch (error) {
+            uploadErrors.push(
+              photo.originalName +
+                ": " +
+                (error instanceof Error ? error.message : "Upload failed."),
+            );
+          } finally {
+            completedUploads += 1;
+            setUploadProgress({
+              done: completedUploads,
+              total: pendingIndexes.length,
+            });
+          }
+        }
       }
 
-      setPhotos(workingPhotos);
+      const workerCount = Math.min(4, pendingIndexes.length);
+      await Promise.all(
+        Array.from({ length: workerCount }, () => uploadWorker()),
+      );
+
+      setPhotos([...workingPhotos]);
+
+      if (uploadErrors.length) {
+        throw new Error(
+          uploadErrors.length +
+            " photo upload" +
+            (uploadErrors.length === 1 ? " failed. " : "s failed. ") +
+            "Try Save or Publish again; successful photos will not be uploaded twice. " +
+            uploadErrors.join(" | "),
+        );
+      }
 
       await supabase.from("vehicle_images").delete().eq("vehicle_id", id);
 
@@ -326,7 +491,7 @@ export default function VehicleUploadForm() {
   const canContinue = [
     Boolean(draft.make && draft.model && draft.year && draft.mileage),
     Boolean(draft.priceUsd),
-    photos.length > 0,
+    photos.length > 0 && !processingPhotos,
     Boolean(draft.transmission && draft.fuel && draft.body),
     true,
   ][step];
@@ -461,26 +626,67 @@ export default function VehicleUploadForm() {
             <>
               <FormHeading
                 number="03"
-                title="Upload the vehicle photos"
-                copy="Upload the full set once. The cover photo drives inventory cards; the rest becomes the vehicle gallery."
+                title="Upload high-quality vehicle photos"
+                copy="Select the originals. HQ Auto keeps suitable files untouched and intelligently reduces oversized photos before upload, with HEIC/HEIF conversion built in."
               />
 
-              <input ref={inputRef} type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={onFileChange} hidden />
+              <input
+                ref={inputRef}
+                type="file"
+                multiple
+                accept="image/*,.heic,.heif"
+                onChange={onFileChange}
+                hidden
+              />
 
               <div
-                className="photo-dropzone"
+                className={processingPhotos ? "photo-dropzone processing" : "photo-dropzone"}
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={onDrop}
-                onClick={() => inputRef.current?.click()}
+                onClick={() => !processingPhotos && inputRef.current?.click()}
               >
                 <span className="photo-drop-icon"><UploadCloud size={28} /></span>
-                <strong>Drop photos here</strong>
-                <p>or click to select multiple images</p>
-                <small>Recommended: 15–30 photos. JPEG, PNG or WebP, up to 15 MB each.</small>
+                <strong>{processingPhotos ? "Preparing high-quality photos…" : "Drop original photos here"}</strong>
+                <p>
+                  {processingPhotos
+                    ? processingProgress.done + " of " + processingProgress.total + " processed"
+                    : "or click to choose JPEG, PNG, WebP, AVIF, HEIC / HEIF and other browser-readable images"}
+                </p>
+                <small>Up to 40 photos · source files up to 100 MB each</small>
               </div>
 
+              <div className="photo-quality-panel">
+                <div>
+                  <span className="v3-mono">HQ AUTO</span>
+                  <strong>3200 px long edge · high-quality WebP when needed</strong>
+                  <p>
+                    Files already under 5 MB and 3200 px are preserved. Larger files are resized only as much as needed and encoded at high quality so uploads stay fast without obvious visual loss.
+                  </p>
+                </div>
+                <div className="photo-quality-spec">
+                  <span>Best capture</span>
+                  <strong>4:3 landscape</strong>
+                  <small>Ideal 3200 × 2400 or larger</small>
+                </div>
+              </div>
+
+              {photos.length > 0 && (
+                <div className="photo-size-summary">
+                  <span><strong>{photos.length}</strong> photos ready</span>
+                  <span><strong>{formatBytes(photoStats.original)}</strong> selected</span>
+                  <span><strong>{formatBytes(photoStats.upload)}</strong> upload size</span>
+                  {photoStats.saved > 0 && <span><strong>{formatBytes(photoStats.saved)}</strong> saved before upload</span>}
+                </div>
+              )}
+
+              {mediaMessages.length > 0 && (
+                <div className="photo-media-messages">
+                  {mediaMessages.map((message) => <span key={message}>{message}</span>)}
+                </div>
+              )}
+
               <div className="photo-shot-guide">
-                {["Front 3/4", "Rear 3/4", "Both sides", "Dashboard", "Front seats", "Rear seats", "Odometer", "Engine bay", "Wheels / tires", "Any damage"].map((item) => (
+                {["Front 3/4 cover", "Rear 3/4", "Both sides", "Dashboard", "Front seats", "Rear seats", "Odometer", "Engine bay", "Wheels / tires", "Any damage"].map((item) => (
                   <span key={item}>{item}</span>
                 ))}
               </div>
@@ -489,9 +695,17 @@ export default function VehicleUploadForm() {
                 <div className="photo-grid">
                   {photos.map((photo, index) => (
                     <div className={coverId === photo.id ? "photo-card cover" : "photo-card"} key={photo.id}>
-                      <img src={photo.url} alt={photo.file.name} />
+                      <img src={photo.url} alt={photo.originalName} />
                       <span className="photo-index">{String(index + 1).padStart(2, "0")}</span>
                       {coverId === photo.id && <span className="cover-label"><Star size={11} /> COVER</span>}
+                      <div className="photo-file-meta">
+                        <strong>{photo.width} × {photo.height}</strong>
+                        <span>
+                          {formatBytes(photo.file.size)}
+                          {photo.optimized ? " · HQ optimized" : " · original kept"}
+                        </span>
+                        {photo.warning && <small>{photo.warning}</small>}
+                      </div>
                       <div className="photo-actions">
                         <button type="button" onClick={() => setCoverId(photo.id)} title="Set cover">
                           <Star size={15} />
@@ -692,7 +906,7 @@ export default function VehicleUploadForm() {
               <button
                 type="button"
                 className="upload-save"
-                disabled={saving}
+                disabled={saving || processingPhotos}
                 onClick={() => {
                   saveLocalBackup();
                   void persistVehicle(false);
@@ -716,11 +930,15 @@ export default function VehicleUploadForm() {
                 <button
                   type="button"
                   className="upload-primary"
-                  disabled={saving || !photos.length}
+                  disabled={saving || processingPhotos || !photos.length}
                   onClick={() => void persistVehicle(true)}
                 >
                   <CheckCircle2 size={15} />
-                  {saving ? "Publishing…" : "Publish live"}
+                  {saving
+                    ? uploadProgress.total
+                      ? "Uploading " + uploadProgress.done + "/" + uploadProgress.total + "…"
+                      : "Publishing…"
+                    : "Publish live"}
                 </button>
               )}
             </div>

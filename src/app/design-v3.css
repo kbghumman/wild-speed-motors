@@ -746,3 +746,26 @@ body { font-size: 16px; line-height: 1.55; }
     padding: 22px;
   }
 }
+
+
+/* Vehicle photography uses one consistent showroom frame. 4:3 matches the upload guidance and avoids excessive cropping. */
+.v3-car-image {
+  aspect-ratio: 4 / 3;
+}
+
+.v4-detail-image {
+  min-height: 0;
+  aspect-ratio: 4 / 3;
+}
+
+@media (max-width: 1100px) {
+  .v4-detail-image {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .v4-detail-image {
+    min-height: 0;
+  }
+}
