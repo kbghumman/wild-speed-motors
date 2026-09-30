@@ -9,7 +9,7 @@ export const modelsByManufacturer: Record<string, string[]> = {
     "Land Cruiser 70","FJ Cruiser","Hilux","Hilux Surf","Highlander","Kluger","Rush",
     "Alphard","Vellfire","Estima","Noah","Voxy","Esquire","Wish","Isis","Ipsum",
     "Hiace","Hiace Van","Regius Ace","Probox","Succeed","TownAce","LiteAce","JPN Taxi",
-    "MR-S","MR2","Celica","Soarer","Curren","Sera","Starlet","Blade","Aurist","ist",
+    "MR-S","MR2","Celica","Soarer","Curren","Sera","Starlet","Blade","Auris","ist",
     "Ractis","Funcargo","Will VS","Will Cypha"
   ],
   "Lexus": [

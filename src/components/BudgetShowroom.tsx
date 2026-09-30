@@ -13,15 +13,16 @@ export default function BudgetShowroom() {
       <div className="container">
         <div className="v3-section-intro">
           <div>
-            <p className="v3-kicker">Virtual showroom</p>
-            <h2>Choose your bay.</h2>
+            <p className="v3-kicker">Shop by budget</p>
+            <h2>Start with what you want to spend.</h2>
           </div>
           <div className="v3-section-intro-copy">
             <p>
-              Price is the floor plan. Each car automatically parks in the right
-              section of the digital lot.
+              Every live vehicle is placed automatically into one non-overlapping
+              price range, so you can browse the stock that fits your budget
+              without sorting through everything first.
             </p>
-            <Link href="/budget">See all budget bays <ArrowUpRight size={15} /></Link>
+            <Link href="/budget">See every price range <ArrowUpRight size={15} /></Link>
           </div>
         </div>
 
@@ -34,10 +35,10 @@ export default function BudgetShowroom() {
             >
               <GarageBayArt index={index} variant={variants[index]} />
               <div className="v3-budget-content">
-                <span className="v3-mono">BAY {String(index + 1).padStart(2, "0")}</span>
+                <span className="v3-mono">PRICE RANGE {String(index + 1).padStart(2, "0")}</span>
                 <strong>{bay.shortTitle}</strong>
                 <p>{bay.description}</p>
-                <span className="v3-card-link">Enter bay <ArrowUpRight size={15} /></span>
+                <span className="v3-card-link">Browse this range <ArrowUpRight size={15} /></span>
               </div>
             </Link>
           ))}

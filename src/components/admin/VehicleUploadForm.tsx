@@ -16,6 +16,7 @@ import {
 import { manufacturerNames } from "@/data/manufacturers";
 import { getModelsForManufacturer } from "@/data/models";
 import { budgetBays } from "@/data/budgetBays";
+import { getCollectionsForCar } from "@/data/collections";
 import { emptyVehicleDraft, type VehicleDraft } from "@/types/inventory";
 import { createClient } from "@/lib/supabase/client";
 import { refreshInventoryCache } from "@/app/admin/actions";
@@ -84,6 +85,17 @@ export default function VehicleUploadForm() {
   const budgetBay = useMemo(
     () => budgetFor(Number(draft.priceUsd || 0)),
     [draft.priceUsd],
+  );
+
+  const collectionMatches = useMemo(
+    () =>
+      getCollectionsForCar({
+        model: draft.model,
+        body: draft.body,
+        year: Number(draft.year || 0),
+        fuel: draft.fuel,
+      }),
+    [draft.model, draft.body, draft.year, draft.fuel],
   );
 
   function update<K extends keyof VehicleDraft>(key: K, value: VehicleDraft[K]) {
@@ -287,9 +299,7 @@ export default function VehicleUploadForm() {
 
       if (coverError) throw coverError;
 
-      if (publish) {
-        await refreshInventoryCache();
-      }
+      await refreshInventoryCache();
 
       setDraft((current) => ({ ...current, status }));
       setSaved(true);
@@ -742,7 +752,7 @@ export default function VehicleUploadForm() {
               <span>Budget bay</span><strong>{budgetBay?.shortTitle ?? "—"}</strong>
             </div>
             <div>
-              <span>Collections</span><strong>Rule-based</strong>
+              <span>Collections</span><strong>{collectionMatches.length ? collectionMatches.map((item) => item.shortTitle).join(", ") : "None yet"}</strong>
             </div>
           </div>
         </aside>

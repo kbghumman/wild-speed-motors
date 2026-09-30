@@ -36,8 +36,8 @@ export default function SearchPanel() {
   return (
     <form className="search-panel v4-search-panel" action="/cars" method="get">
       <div className="v4-search-heading">
-        <div><span className="v3-mono">FIND YOUR CAR</span><strong>Search live inventory</strong></div>
-        <Link href="/cars">Browse everything →</Link>
+        <div><span className="v3-mono">LIVE INVENTORY</span><strong>Find a car that fits</strong></div>
+        <Link href="/cars">See all cars →</Link>
       </div>
 
       <div className="v4-search-grid">

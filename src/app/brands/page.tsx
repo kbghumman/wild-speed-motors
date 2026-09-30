@@ -3,11 +3,12 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import BrandLogo from "@/components/BrandLogo";
 import { manufacturers } from "@/data/manufacturers";
+import { getPublicCars } from "@/lib/inventory";
 
 const japanese = manufacturers.filter((item) => item.market === "Japan");
 const imports = manufacturers.filter((item) => item.market === "Import");
 
-function BrandGroup({ title, subtitle, brands, tone }: { title: string; subtitle: string; brands: typeof manufacturers; tone: string }) {
+function BrandGroup({ title, subtitle, brands, tone, counts }: { title: string; subtitle: string; brands: typeof manufacturers; tone: string; counts: Map<string, number> }) {
   return (
     <section className={"section brand-directory-section " + tone}>
       <div className="container">
@@ -21,7 +22,7 @@ function BrandGroup({ title, subtitle, brands, tone }: { title: string; subtitle
             <Link key={brand.name} href={"/cars?make=" + encodeURIComponent(brand.name)} className="brand-directory-card v4-brand-directory-card">
               <BrandLogo brand={brand.name} className="v4-directory-logo" />
               <strong>{brand.name}</strong>
-              <span>Browse stock →</span>
+              <span>{counts.get(brand.name) ?? 0} live · Browse stock →</span>
             </Link>
           ))}
         </div>
@@ -30,7 +31,11 @@ function BrandGroup({ title, subtitle, brands, tone }: { title: string; subtitle
   );
 }
 
-export default function BrandsPage() {
+export default async function BrandsPage() {
+  const cars = await getPublicCars();
+  const counts = new Map<string, number>();
+  for (const car of cars) counts.set(car.make, (counts.get(car.make) ?? 0) + 1);
+
   return (
     <>
       <Header />
@@ -51,8 +56,8 @@ export default function BrandsPage() {
           </div>
         </section>
 
-        <BrandGroup title="Japanese manufacturers" subtitle="Home market" brands={japanese} tone="brand-tone-japan" />
-        <BrandGroup title="Imported manufacturers" subtitle="International" brands={imports} tone="brand-tone-import" />
+        <BrandGroup title="Japanese manufacturers" subtitle="Home market" brands={japanese} tone="brand-tone-japan" counts={counts} />
+        <BrandGroup title="Imported manufacturers" subtitle="International" brands={imports} tone="brand-tone-import" counts={counts} />
       </main>
       <SiteFooter />
     </>

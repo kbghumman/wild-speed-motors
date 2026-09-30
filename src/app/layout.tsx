@@ -18,9 +18,9 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Wild Speed Motors Japan | Used Cars in USD",
+  title: "Wild Speed Motors Japan | Used Cars Priced in USD",
   description:
-    "Japan-based used cars with USD pricing and a digital-first buying experience for the U.S. military community.",
+    "Browse live used-car inventory in Japan with clear USD pricing, vehicle details and direct showroom enquiries for U.S. service members and international drivers.",
 };
 
 export default function RootLayout({

@@ -1,12 +1,14 @@
 import type { Car } from "@/data/cars";
 
+export type CollectionTraits = Pick<Car, "model" | "body" | "year" | "fuel">;
+
 export type Collection = {
   slug: string;
   title: string;
   shortTitle: string;
   description: string;
   eyebrow: string;
-  rule: (car: Car) => boolean;
+  rule: (car: CollectionTraits) => boolean;
 };
 
 const sportsModels = new Set([
@@ -25,8 +27,8 @@ export const collections: Collection[] = [
     title: "Sports cars",
     shortTitle: "Sports cars",
     eyebrow: "Performance",
-    description: "Performance-focused coupes, roadsters, hot hatches and enthusiast cars.",
-    rule: (car) => sportsModels.has(car.model) || car.body === "Coupe" || car.body === "Roadster",
+    description: "Recognised performance cars and roadsters from the live inventory.",
+    rule: (car) => sportsModels.has(car.model) || car.body === "Roadster",
   },
   {
     slug: "classic-cars",
@@ -34,7 +36,7 @@ export const collections: Collection[] = [
     shortTitle: "Classic cars",
     eyebrow: "Older favourites",
     description: "Older and collectible vehicles, including recognised Japanese and imported classics.",
-    rule: (car) => car.year <= 2000,
+    rule: (car) => car.year > 0 && car.year <= 2000,
   },
   {
     slug: "suv-4x4",
@@ -63,4 +65,8 @@ export function getCollection(slug: string) {
 export function getCarsForCollection(slug: string, cars: Car[]) {
   const collection = getCollection(slug);
   return collection ? cars.filter(collection.rule) : [];
+}
+
+export function getCollectionsForCar(car: CollectionTraits) {
+  return collections.filter((collection) => collection.rule(car));
 }

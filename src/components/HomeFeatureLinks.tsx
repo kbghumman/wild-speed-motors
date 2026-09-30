@@ -8,8 +8,15 @@ export default function HomeFeatureLinks() {
       <div className="container">
         <div className="v3-section-intro">
           <div>
-            <p className="v3-kicker">Beyond the inventory</p>
-            <h2>Three useful next steps.</h2>
+            <p className="v3-kicker">More ways to shop</p>
+            <h2>Start from what matters to you.</h2>
+          </div>
+          <div className="v3-section-intro-copy">
+            <p>
+              Not every customer starts with a specific make and model. Browse
+              by the kind of car you want, understand the buying route, or talk
+              to us about your current vehicle.
+            </p>
           </div>
         </div>
 
@@ -20,27 +27,27 @@ export default function HomeFeatureLinks() {
               <span className="v3-path-gridline" />
             </div>
             <div>
-              <span className="v3-mono">CURATED STOCK</span>
+              <span className="v3-mono">SHOP BY TYPE</span>
               <strong>Collections</strong>
-              <p>Sports, classics, SUVs and electrified cars get their own spaces.</p>
+              <p>Sports cars, classics, SUVs, 4x4s, hybrids and EVs are grouped automatically from the live inventory.</p>
               <span className="v3-card-link">Explore collections <ArrowUpRight size={15} /></span>
             </div>
           </Link>
 
           <Link href="/finance" className="v3-path-card v3-path-small v3-path-finance">
             <div className="v3-path-icon"><BadgeDollarSign size={26} /></div>
-            <span className="v3-mono">OWNERSHIP</span>
+            <span className="v3-mono">BUYING OPTIONS</span>
             <strong>Finance</strong>
-            <p>Understand the buying route before choosing the car.</p>
-            <span className="v3-card-link">Learn more <ArrowUpRight size={15} /></span>
+            <p>Review the information available and contact us to discuss the route that applies to the vehicle you are considering.</p>
+            <span className="v3-card-link">Finance information <ArrowUpRight size={15} /></span>
           </Link>
 
           <Link href="/sell" className="v3-path-card v3-path-small v3-path-sell">
             <div className="v3-path-icon"><Repeat2 size={26} /></div>
-            <span className="v3-mono">CHANGE CARS</span>
+            <span className="v3-mono">YOUR CURRENT CAR</span>
             <strong>Sell or trade</strong>
-            <p>Value your current car or use it toward the next one.</p>
-            <span className="v3-card-link">Start here <ArrowUpRight size={15} /></span>
+            <p>Tell us what you drive now if you want to sell it or discuss using it toward another car.</p>
+            <span className="v3-card-link">Start a valuation enquiry <ArrowUpRight size={15} /></span>
           </Link>
         </div>
       </div>
