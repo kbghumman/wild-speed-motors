@@ -1,9 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
   ArrowRight,
   BadgeCheck,
   BadgeDollarSign,
@@ -21,6 +18,9 @@ import PopularBrands from "@/components/PopularBrands";
 import BudgetShowroom from "@/components/BudgetShowroom";
 import HomeFeatureLinks from "@/components/HomeFeatureLinks";
 import { getPublicCars } from "@/lib/inventory";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function HomePage() {
   const cars = await getPublicCars();
