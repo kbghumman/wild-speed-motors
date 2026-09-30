@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LockKeyhole } from "lucide-react";
 import { login } from "@/app/admin/actions";
+import { hasSupabaseEnv } from "@/lib/supabase/env";
 
 export const metadata: Metadata = {
   title: "Dealer Login | Wild Speed Motors",
@@ -20,6 +21,7 @@ export default async function AdminLoginPage({
   searchParams: Promise<{ error?: string; setup?: string }>;
 }) {
   const params = await searchParams;
+  const configured = hasSupabaseEnv();
   const message = params.error ? messages[params.error] : null;
 
   return (
@@ -31,9 +33,10 @@ export default async function AdminLoginPage({
           <p>Private inventory management for approved staff.</p>
         </div>
 
-        {params.setup === "1" && (
+        {!configured && (
           <div className="admin-login-alert">
-            Supabase environment variables have not been added to this deployment yet.
+            Dealer login is temporarily unavailable because the Supabase connection
+            is not configured on this deployment.
           </div>
         )}
 
@@ -42,7 +45,13 @@ export default async function AdminLoginPage({
         <form action={login} className="admin-login-form">
           <label>
             <span>Email</span>
-            <input name="email" type="email" autoComplete="email" required />
+            <input
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              disabled={!configured}
+            />
           </label>
 
           <label>
@@ -52,12 +61,13 @@ export default async function AdminLoginPage({
               type="password"
               autoComplete="current-password"
               required
+              disabled={!configured}
             />
           </label>
 
-          <button type="submit">
+          <button type="submit" disabled={!configured}>
             <LockKeyhole size={16} />
-            Sign in
+            {configured ? "Sign in" : "Login unavailable"}
           </button>
         </form>
 
