@@ -6,6 +6,9 @@ import InventoryFilters, { type InventoryFilterValues } from "@/components/Inven
 import { getModelsForManufacturer } from "@/data/models";
 import { getPublicCars } from "@/lib/inventory";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 function valueOf(params: Record<string, string | string[] | undefined>, key: string) {

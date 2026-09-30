@@ -6,6 +6,9 @@ import SiteFooter from "@/components/SiteFooter";
 import { getPublicCarBySlug } from "@/lib/inventory";
 import { formatUSD } from "@/lib/currency";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function CarDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const car = await getPublicCarBySlug(slug);

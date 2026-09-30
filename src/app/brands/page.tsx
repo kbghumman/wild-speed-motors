@@ -5,6 +5,9 @@ import BrandLogo from "@/components/BrandLogo";
 import { manufacturers } from "@/data/manufacturers";
 import { getPublicCars } from "@/lib/inventory";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const japanese = manufacturers.filter((item) => item.market === "Japan");
 const imports = manufacturers.filter((item) => item.market === "Import");
 
