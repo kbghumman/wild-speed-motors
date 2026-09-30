@@ -16,6 +16,8 @@ type VehicleRow = {
   transmission: string | null;
   drivetrain: string | null;
   body: string | null;
+  seats: number | null;
+  doors: number | null;
   engine: string | null;
   exterior_color: string | null;
   interior_color: string | null;
@@ -55,6 +57,8 @@ function toCar(row: VehicleRow, images: ImageRow[] = []): Car {
     transmission: row.transmission ?? "",
     drivetrain: row.drivetrain ?? "",
     body: row.body ?? "",
+    seats: row.seats,
+    doors: row.doors,
     engine: row.engine ?? "",
     exteriorColor: row.exterior_color ?? "",
     interiorColor: row.interior_color ?? "",
@@ -77,7 +81,7 @@ function toCar(row: VehicleRow, images: ImageRow[] = []): Car {
 }
 
 const publicSelect =
-  "id,slug,make,model,trim,year,mileage,price_usd,monthly_usd,fuel,transmission,drivetrain,body,engine,exterior_color,interior_color,shaken_expiry,location,condition,description,features,cover_image_url,status,stock_number,chassis_number";
+  "id,slug,make,model,trim,year,mileage,price_usd,monthly_usd,fuel,transmission,drivetrain,body,seats,doors,engine,exterior_color,interior_color,shaken_expiry,location,condition,description,features,cover_image_url,status,stock_number,chassis_number";
 
 export async function getPublicCars(): Promise<Car[]> {
   const supabase = createPublicClient();

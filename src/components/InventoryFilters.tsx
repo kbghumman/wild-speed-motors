@@ -12,15 +12,18 @@ export type InventoryFilterValues = {
   transmission: string;
   fuel: string;
   budget: string;
+  seats: string;
   sort: string;
 };
 
 export default function InventoryFilters({
   initial,
   initialModels,
+  naturalQuery = "",
 }: {
   initial: InventoryFilterValues;
   initialModels: string[];
+  naturalQuery?: string;
 }) {
   const [make, setMake] = useState(initial.make);
   const [model, setModel] = useState(initial.model);
@@ -62,6 +65,8 @@ export default function InventoryFilters({
       </div>
 
       <form action="/cars" method="get">
+        {naturalQuery && <input type="hidden" name="q" value={naturalQuery} />}
+
         <div className="filter-group">
           <label htmlFor="filter-make">Make</label>
           <select id="filter-make" name="make" value={make} onChange={(event) => setMake(event.target.value)}>
@@ -101,6 +106,18 @@ export default function InventoryFilters({
         </div>
 
         <div className="filter-group">
+          <label htmlFor="filter-seats">Minimum seats</label>
+          <select id="filter-seats" name="seats" defaultValue={initial.seats}>
+            <option value="">Any seating</option>
+            <option value="2">2+</option>
+            <option value="4">4+</option>
+            <option value="5">5+</option>
+            <option value="7">7+</option>
+            <option value="8">8+</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
           <label htmlFor="filter-budget">Max price</label>
           <select id="filter-budget" name="budget" defaultValue={initial.budget}>
             <option value="">Any price</option>
@@ -111,6 +128,7 @@ export default function InventoryFilters({
         <div className="filter-group">
           <label htmlFor="filter-sort">Sort by</label>
           <select id="filter-sort" name="sort" defaultValue={initial.sort}>
+            {naturalQuery && <option value="relevance">Best match</option>}
             <option value="newest">Newest first</option>
             <option value="price-low">Price: low to high</option>
             <option value="price-high">Price: high to low</option>

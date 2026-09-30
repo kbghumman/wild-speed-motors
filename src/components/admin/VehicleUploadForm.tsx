@@ -324,6 +324,8 @@ export default function VehicleUploadForm() {
         transmission: draft.transmission || null,
         drivetrain: draft.drivetrain || null,
         body: draft.body || null,
+        seats: draft.seats ? Number(draft.seats) : null,
+        doors: draft.doors ? Number(draft.doors) : null,
         engine: draft.engine || null,
         exterior_color: draft.exteriorColor || null,
         interior_color: draft.interiorColor || null,
@@ -492,7 +494,7 @@ export default function VehicleUploadForm() {
     Boolean(draft.make && draft.model && draft.year && draft.mileage),
     Boolean(draft.priceUsd),
     photos.length > 0 && !processingPhotos,
-    Boolean(draft.transmission && draft.fuel && draft.body),
+    Boolean(draft.transmission && draft.fuel && draft.body && draft.seats),
     true,
   ][step];
 
@@ -780,6 +782,20 @@ export default function VehicleUploadForm() {
                   </select>
                 </Field>
 
+                <Field label="Seats" hint="Needed for smart search" required>
+                  <select value={draft.seats} onChange={(e) => update("seats", e.target.value)}>
+                    <option value="">Select seating capacity</option>
+                    {[2,3,4,5,6,7,8,9,10,11,12].map((value) => <option key={value} value={value}>{value} seats</option>)}
+                  </select>
+                </Field>
+
+                <Field label="Doors" hint="Optional">
+                  <select value={draft.doors} onChange={(e) => update("doors", e.target.value)}>
+                    <option value="">Select door count</option>
+                    {[2,3,4,5,6].map((value) => <option key={value} value={value}>{value} doors</option>)}
+                  </select>
+                </Field>
+
                 <Field label="Engine">
                   <input value={draft.engine} onChange={(e) => update("engine", e.target.value)} placeholder="e.g. 2.0L Turbo" />
                 </Field>
@@ -869,6 +885,8 @@ export default function VehicleUploadForm() {
                     <div><dt>Transmission</dt><dd>{draft.transmission || "—"}</dd></div>
                     <div><dt>Fuel</dt><dd>{draft.fuel || "—"}</dd></div>
                     <div><dt>Drivetrain</dt><dd>{draft.drivetrain || "—"}</dd></div>
+                    <div><dt>Seats</dt><dd>{draft.seats ? draft.seats + " seats" : "—"}</dd></div>
+                    <div><dt>Doors</dt><dd>{draft.doors ? draft.doors + " doors" : "—"}</dd></div>
                     <div><dt>Engine</dt><dd>{draft.engine || "—"}</dd></div>
                     <div><dt>Photos</dt><dd>{photos.length}</dd></div>
                   </dl>
@@ -954,7 +972,7 @@ export default function VehicleUploadForm() {
             <Completeness label="Vehicle identity" done={Boolean(draft.make && draft.model && draft.year && draft.mileage)} />
             <Completeness label="USD price" done={Boolean(draft.priceUsd)} />
             <Completeness label="Photos" done={photos.length > 0} detail={photos.length ? photos.length + " added" : "None"} />
-            <Completeness label="Specifications" done={Boolean(draft.transmission && draft.fuel && draft.body)} />
+            <Completeness label="Specifications" done={Boolean(draft.transmission && draft.fuel && draft.body && draft.seats)} detail={draft.seats ? draft.seats + " seats entered" : "Seats required"} />
             <Completeness label="Description" done={Boolean(draft.description)} />
           </div>
 

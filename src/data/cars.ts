@@ -12,6 +12,8 @@ export type Car = {
   transmission: string;
   body: string;
   engine: string;
+  seats?: number | null;
+  doors?: number | null;
   image: string;
   images?: string[];
   drivetrain?: string;

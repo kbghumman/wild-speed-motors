@@ -1,10 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import type { Car } from "@/data/cars";
 import { formatUSD } from "@/lib/currency";
 
-export default function CarCard({ car }: { car: Car }) {
+export default function CarCard({
+  car,
+  matchReasons = [],
+}: {
+  car: Car;
+  matchReasons?: string[];
+}) {
   return (
     <Link href={"/cars/" + car.slug} className="v3-car-card">
       <div className="v3-car-image">
@@ -23,6 +29,13 @@ export default function CarCard({ car }: { car: Car }) {
       </div>
 
       <div className="v3-car-body">
+        {matchReasons.length > 0 && (
+          <div className="smart-match-reasons">
+            <span><Sparkles size={11} /> Why it matches</span>
+            <div>{matchReasons.slice(0, 3).map((reason) => <small key={reason}>{reason}</small>)}</div>
+          </div>
+        )}
+
         <div className="v3-car-heading">
           <div>
             <span className="v3-mono">{car.make}</span>
@@ -34,6 +47,7 @@ export default function CarCard({ car }: { car: Car }) {
 
         <div className="v3-car-data">
           <span>{car.mileage.toLocaleString()} KM</span>
+          {car.seats ? <span>{car.seats} SEATS</span> : null}
           {car.transmission && <span>{car.transmission.toUpperCase()}</span>}
           {car.fuel && <span>{car.fuel.toUpperCase()}</span>}
           {car.engine && <span>{car.engine.toUpperCase()}</span>}

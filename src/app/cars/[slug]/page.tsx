@@ -22,6 +22,8 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
     ["Drivetrain", car.drivetrain || "—"],
     ["Engine", car.engine],
     ["Body", car.body],
+    ["Seats", car.seats ? String(car.seats) : "Ask dealer"],
+    ["Doors", car.doors ? String(car.doors) : "Ask dealer"],
     ["Shaken", car.shakenExpiry || "Ask dealer"],
   ];
 

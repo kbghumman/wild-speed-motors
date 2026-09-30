@@ -13,6 +13,7 @@ import {
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import SearchPanel from "@/components/SearchPanel";
+import SmartCarFinder from "@/components/SmartCarFinder";
 import CarCard from "@/components/CarCard";
 import PopularBrands from "@/components/PopularBrands";
 import BudgetShowroom from "@/components/BudgetShowroom";
@@ -79,7 +80,11 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="v3-search-wrap">
+        <section className="v6-smart-wrap">
+          <div className="container"><SmartCarFinder /></div>
+        </section>
+
+        <section className="v3-search-wrap v6-filter-wrap">
           <div className="container"><SearchPanel /></div>
         </section>
 

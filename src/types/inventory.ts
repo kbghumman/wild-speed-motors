@@ -15,6 +15,8 @@ export type VehicleDraft = {
   transmission: string;
   drivetrain: string;
   body: string;
+  seats: string;
+  doors: string;
   engine: string;
   exteriorColor: string;
   interiorColor: string;
@@ -41,6 +43,8 @@ export const emptyVehicleDraft: VehicleDraft = {
   transmission: "",
   drivetrain: "",
   body: "",
+  seats: "",
+  doors: "",
   engine: "",
   exteriorColor: "",
   interiorColor: "",

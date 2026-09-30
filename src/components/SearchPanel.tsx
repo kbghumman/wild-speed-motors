@@ -36,7 +36,7 @@ export default function SearchPanel() {
   return (
     <form className="search-panel v4-search-panel" action="/cars" method="get">
       <div className="v4-search-heading">
-        <div><span className="v3-mono">LIVE INVENTORY</span><strong>Find a car that fits</strong></div>
+        <div><span className="v3-mono">PREFER FILTERS?</span><strong>Search with exact fields</strong></div>
         <Link href="/cars">See all cars →</Link>
       </div>
 
@@ -67,6 +67,17 @@ export default function SearchPanel() {
             <option value="20000">Up to $20,000</option>
             <option value="30000">Up to $30,000</option>
             <option value="30000plus">$30,000+</option>
+          </select>
+        </div>
+
+        <div className="field">
+          <label htmlFor="home-seats">Minimum seats</label>
+          <select id="home-seats" name="seats" defaultValue="">
+            <option value="">Any seating</option>
+            <option value="4">4+</option>
+            <option value="5">5+</option>
+            <option value="7">7+</option>
+            <option value="8">8+</option>
           </select>
         </div>
 
