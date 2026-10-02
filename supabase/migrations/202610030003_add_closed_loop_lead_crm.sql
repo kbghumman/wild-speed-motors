@@ -1,0 +1,13 @@
+-- Closed-loop dealer CRM.
+-- Applied to production Supabase on 2026-10-03.
+--
+-- Creates:
+--   public.leads
+--   public.lead_activities
+--   staff-only RLS policies
+--   lead status/priority activity triggers
+--   public.submit_public_lead(...) security-definer RPC with validation,
+--   basic anti-spam rate limiting, vehicle UUID resolution, acquisition context,
+--   and a canonical generate_lead analytics event.
+--
+-- The production migration is the source of truth for the full function bodies.

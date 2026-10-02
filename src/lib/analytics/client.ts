@@ -188,3 +188,30 @@ export function trackEvent(
     // Analytics failures must never affect customers.
   }
 }
+
+
+export function getAnalyticsContext() {
+  if (typeof window === "undefined") {
+    return {
+      visitor_id: null,
+      session_id: null,
+      source_path: "/",
+      referrer_host: null,
+      utm_source: null,
+      utm_medium: null,
+      utm_campaign: null,
+      utm_content: null,
+      utm_term: null,
+    };
+  }
+
+  const sessionId = getSessionId();
+  const attribution = getAttribution(sessionId);
+
+  return {
+    visitor_id: getVisitorId(),
+    session_id: sessionId,
+    source_path: window.location.pathname,
+    ...attribution,
+  };
+}

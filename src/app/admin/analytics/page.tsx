@@ -26,9 +26,26 @@ export default async function AnalyticsPage({
   const days = [7, 30, 90].includes(Number(params.days)) ? Number(params.days) : 30;
   const { supabase } = await requireStaff();
 
-  const { data, error } = await supabase.rpc("get_inventory_analytics", {
-    p_days: days,
-  });
+  const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+
+  const [{ data, error }, { data: leadData }] = await Promise.all([
+    supabase.rpc("get_inventory_analytics", { p_days: days }),
+    supabase
+      .from("leads")
+      .select("vehicle_id,status")
+      .gte("created_at", since),
+  ]);
+
+  const leads = (leadData ?? []) as unknown as Array<{ vehicle_id: string | null; status: string }>;
+  const leadByVehicle = new Map<string, { total: number; won: number }>();
+  for (const lead of leads) {
+    if (!lead.vehicle_id) continue;
+    const current = leadByVehicle.get(lead.vehicle_id) ?? { total: 0, won: 0 };
+    current.total += 1;
+    if (lead.status === "won") current.won += 1;
+    leadByVehicle.set(lead.vehicle_id, current);
+  }
+  const wonLeads = leads.filter((lead) => lead.status === "won").length;
 
   const analytics = (data ?? {
     days,
@@ -80,8 +97,8 @@ export default async function AnalyticsPage({
         <article><Eye size={20} /><span>VDP viewers</span><strong>{num(s.vdp_viewers)}</strong><small>{num(s.vdp_views)} vehicle-detail views</small></article>
         <article><Search size={20} /><span>Search activity</span><strong>{num(s.searches)}</strong><small>{num(s.searchers)} unique searchers</small></article>
         <article><MousePointerClick size={20} /><span>Buyer-intent people</span><strong>{num(s.intent_visitors)}</strong><small>{num(s.intent_actions)} intent actions</small></article>
-        <article><CarFront size={20} /><span>Inventory units</span><strong>{analytics.vehicles.length}</strong><small>Every unit gets its own profile</small></article>
-        <article><ArrowRight size={20} /><span>VDP intent rate</span><strong>{s.vdp_viewers ? ((s.intent_visitors / s.vdp_viewers) * 100).toFixed(1) + "%" : "0.0%"}</strong><small>Unique intent visitors / VDP viewers</small></article>
+        <article><CarFront size={20} /><span>Submitted leads</span><strong>{leads.length}</strong><small>Real CRM records, not just clicks</small></article>
+        <article><ArrowRight size={20} /><span>Won leads</span><strong>{wonLeads}</strong><small>Closed as sale in this window</small></article>
       </div>
 
       <section className="admin-panel dealer-inventory-analytics">
@@ -103,6 +120,7 @@ export default async function AnalyticsPage({
               <span>Return</span>
               <span>Photos</span>
               <span>Buyer intent</span>
+              <span>Leads</span>
               <span>Velocity</span>
               <span />
             </div>
@@ -147,6 +165,11 @@ export default async function AnalyticsPage({
                   <small>
                     {num(vehicle.enquiry_clicks)} enquire · {num(vehicle.test_drive_clicks)} drive
                   </small>
+                </div>
+
+                <div className="dealer-cell">
+                  <strong>{leadByVehicle.get(vehicle.id)?.total ?? 0}</strong>
+                  <small>{leadByVehicle.get(vehicle.id)?.won ?? 0} won</small>
                 </div>
 
                 <div className="dealer-cell">

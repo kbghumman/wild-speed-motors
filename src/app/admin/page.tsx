@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, CarFront, CircleDollarSign, ImagePlus, Plus } from "lucide-react";
+import { ArrowUpRight, CarFront, ImagePlus, Plus, UsersRound } from "lucide-react";
 import AdminShell from "@/components/admin/AdminShell";
 import { requireStaff } from "@/lib/auth";
 import { getAdminCars } from "@/lib/inventory";
@@ -14,8 +14,19 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
-  await requireStaff();
-  const cars = await getAdminCars();
+  const { supabase } = await requireStaff();
+  const [cars, leadsResult] = await Promise.all([
+    getAdminCars(),
+    supabase
+      .from("leads")
+      .select("id,status,priority", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .limit(200),
+  ]);
+
+  const leads = (leadsResult.data ?? []) as Array<{ id: string; status: string; priority: string }>;
+  const openLeads = leads.filter((lead) => !["won", "lost"].includes(lead.status));
+  const newLeads = leads.filter((lead) => lead.status === "new").length;
 
   return (
     <AdminShell title="Inventory dashboard" eyebrow="Dealer console">
@@ -26,7 +37,7 @@ export default async function AdminDashboardPage() {
           <ArrowUpRight size={20} />
         </Link>
         <article className="admin-stat-card"><CarFront size={22} /><span>Inventory records</span><strong>{cars.length}</strong><small>Database-backed</small></article>
-        <article className="admin-stat-card"><CircleDollarSign size={22} /><span>Display currency</span><strong>USD</strong><small>Mileage remains in km</small></article>
+        <Link href="/admin/leads" className="admin-stat-card"><UsersRound size={22} /><span>Open leads</span><strong>{openLeads.length}</strong><small>{newLeads} new / unworked</small></Link>
         <article className="admin-stat-card"><ImagePlus size={22} /><span>Photo workflow</span><strong>Storage</strong><small>Supabase vehicle-images bucket</small></article>
       </div>
 
