@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SlidersHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 import { manufacturerNames } from "@/data/manufacturers";
+import { trackEvent } from "@/lib/analytics/client";
 
 export type InventoryFilterValues = {
   make: string;
@@ -64,7 +65,24 @@ export default function InventoryFilters({
         <div><strong>Filter cars</strong><span>Narrow the live inventory</span></div>
       </div>
 
-      <form action="/cars" method="get">
+      <form
+        action="/cars"
+        method="get"
+        onSubmit={(event) => {
+          const form = new FormData(event.currentTarget);
+          trackEvent("filter_search_submit", {
+            make: String(form.get("make") || ""),
+            model: String(form.get("model") || ""),
+            body: String(form.get("body") || ""),
+            transmission: String(form.get("transmission") || ""),
+            fuel: String(form.get("fuel") || ""),
+            seats: String(form.get("seats") || ""),
+            budget: String(form.get("budget") || ""),
+            sort: String(form.get("sort") || ""),
+            refinement: Boolean(naturalQuery),
+          });
+        }}
+      >
         {naturalQuery && <input type="hidden" name="q" value={naturalQuery} />}
 
         <div className="filter-group">

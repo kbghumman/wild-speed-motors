@@ -7,6 +7,7 @@ import InventoryFilters, { type InventoryFilterValues } from "@/components/Inven
 import { getModelsForManufacturer } from "@/data/models";
 import { getPublicCars } from "@/lib/inventory";
 import { runSmartCarSearch } from "@/lib/smart-car-search";
+import TrackEventOnView from "@/components/analytics/TrackEventOnView";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -89,6 +90,19 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
   return (
     <>
       <Header />
+      {smart && (
+        <TrackEventOnView
+          eventName="smart_search_results"
+          properties={{
+            query: naturalQuery,
+            result_count: results.length,
+            exact_count: smart.exactMatches.length,
+            near_count: smart.nearMatches.length,
+            zero_results: results.length === 0,
+            understood: smart.intent.understood,
+          }}
+        />
+      )}
       <main>
         <section className="page-hero inventory-hero v4-inventory-hero">
           <div className="container">

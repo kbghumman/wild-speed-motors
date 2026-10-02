@@ -12,7 +12,7 @@ export default function CarCard({
   matchReasons?: string[];
 }) {
   return (
-    <Link href={"/cars/" + car.slug} className="v3-car-card">
+    <Link href={"/cars/" + car.slug} className="v3-car-card" data-analytics-event="car_card_click" data-analytics-label={car.make + " " + car.model} data-vehicle-slug={car.slug}>
       <div className="v3-car-image">
         {car.image ? (
           <Image

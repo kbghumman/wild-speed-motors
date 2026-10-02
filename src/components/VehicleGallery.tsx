@@ -3,15 +3,18 @@
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Expand, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics/client";
 
 export default function VehicleGallery({
   coverImage,
   images,
   alt,
+  vehicleSlug,
 }: {
   coverImage?: string;
   images?: string[];
   alt: string;
+  vehicleSlug: string;
 }) {
   const gallery = useMemo(() => {
     const ordered = [coverImage, ...(images ?? [])].filter(Boolean) as string[];
@@ -21,6 +24,7 @@ export default function VehicleGallery({
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const touchStartX = useRef<number | null>(null);
+  const viewedPhotos = useRef(new Set<number>());
 
   const count = gallery.length;
   const activeImage = gallery[activeIndex];
@@ -31,12 +35,20 @@ export default function VehicleGallery({
   }
 
   function previous() {
+    trackEvent("gallery_previous", { from_photo: activeIndex + 1 }, { vehicleSlug });
     goTo(activeIndex - 1);
   }
 
   function next() {
+    trackEvent("gallery_next", { from_photo: activeIndex + 1 }, { vehicleSlug });
     goTo(activeIndex + 1);
   }
+
+  useEffect(() => {
+    if (!count || viewedPhotos.current.has(activeIndex)) return;
+    viewedPhotos.current.add(activeIndex);
+    trackEvent("gallery_photo_view", { photo_index: activeIndex + 1, photo_count: count }, { vehicleSlug });
+  }, [activeIndex, count, vehicleSlug]);
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -67,8 +79,9 @@ export default function VehicleGallery({
     touchStartX.current = null;
 
     if (Math.abs(delta) < 45) return;
-    if (delta > 0) previous();
-    else next();
+    trackEvent("gallery_swipe", { direction: delta > 0 ? "previous" : "next", from_photo: activeIndex + 1 }, { vehicleSlug });
+    if (delta > 0) goTo(activeIndex - 1);
+    else goTo(activeIndex + 1);
   }
 
   if (!activeImage) {
@@ -117,7 +130,10 @@ export default function VehicleGallery({
           <button
             type="button"
             className="vehicle-gallery-expand"
-            onClick={() => setLightboxOpen(true)}
+            onClick={() => {
+              setLightboxOpen(true);
+              trackEvent("gallery_fullscreen_open", { photo_index: activeIndex + 1 }, { vehicleSlug });
+            }}
             aria-label="Open photo fullscreen"
           >
             <Expand size={17} />
@@ -138,7 +154,10 @@ export default function VehicleGallery({
                 type="button"
                 key={image}
                 className={index === activeIndex ? "active" : ""}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => {
+                  setActiveIndex(index);
+                  trackEvent("gallery_thumbnail_click", { photo_index: index + 1 }, { vehicleSlug });
+                }}
                 aria-label={"Show photo " + (index + 1)}
                 aria-current={index === activeIndex ? "true" : undefined}
               >
@@ -161,7 +180,10 @@ export default function VehicleGallery({
           <button
             type="button"
             className="vehicle-lightbox-close"
-            onClick={() => setLightboxOpen(false)}
+            onClick={() => {
+              setLightboxOpen(false);
+              trackEvent("gallery_fullscreen_close", { photo_index: activeIndex + 1 }, { vehicleSlug });
+            }}
             aria-label="Close fullscreen photo viewer"
           >
             <X size={24} />

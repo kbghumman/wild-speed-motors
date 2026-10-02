@@ -5,6 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import { getPublicCarBySlug } from "@/lib/inventory";
 import { formatUSD } from "@/lib/currency";
 import VehicleGallery from "@/components/VehicleGallery";
+import TrackEventOnView from "@/components/analytics/TrackEventOnView";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -30,6 +31,20 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
   return (
     <>
       <Header />
+      <TrackEventOnView
+        eventName="vehicle_view"
+        vehicleSlug={car.slug}
+        properties={{
+          make: car.make,
+          model: car.model,
+          trim: car.trim,
+          year: car.year,
+          price: car.price,
+          mileage: car.mileage,
+          seats: car.seats ?? null,
+          body: car.body,
+        }}
+      />
       <main>
         <section className="page-hero v4-detail-crumb">
           <div className="container"><Link href="/cars">← Back to all cars</Link></div>
@@ -42,6 +57,7 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
                 coverImage={car.image}
                 images={car.images}
                 alt={car.make + " " + car.model + " " + car.trim}
+                vehicleSlug={car.slug}
               />
 
               <div className="detail-specs">
@@ -60,10 +76,10 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               {car.monthly > 0 && <p className="v4-finance-note">Indicative from <strong>{formatUSD(car.monthly)}/month</strong></p>}
               {car.stockNumber && <p className="v3-mono">STOCK {car.stockNumber}</p>}
               <div className="detail-actions">
-                <Link href="/contact" className="button-primary">Enquire about this car</Link>
-                <Link href="/contact" className="button-secondary">Book a test drive</Link>
-                <Link href="/finance" className="button-secondary">Finance options</Link>
-                <Link href="/sell" className="button-secondary">Trade in my car</Link>
+                <Link href="/contact" className="button-primary" data-analytics-event="enquiry_click" data-analytics-label="Enquire about this car" data-vehicle-slug={car.slug}>Enquire about this car</Link>
+                <Link href="/contact" className="button-secondary" data-analytics-event="test_drive_click" data-analytics-label="Book a test drive" data-vehicle-slug={car.slug}>Book a test drive</Link>
+                <Link href="/finance" className="button-secondary" data-analytics-event="finance_click" data-analytics-label="Finance options" data-vehicle-slug={car.slug}>Finance options</Link>
+                <Link href="/sell" className="button-secondary" data-analytics-event="trade_in_click" data-analytics-label="Trade in my car" data-vehicle-slug={car.slug}>Trade in my car</Link>
               </div>
             </aside>
           </div>

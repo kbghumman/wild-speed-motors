@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { manufacturerNames } from "@/data/manufacturers";
+import { trackEvent } from "@/lib/analytics/client";
 
 export default function SearchPanel() {
   const [make, setMake] = useState("");
@@ -34,7 +35,21 @@ export default function SearchPanel() {
   }, [make]);
 
   return (
-    <form className="search-panel v4-search-panel" action="/cars" method="get">
+    <form
+      className="search-panel v4-search-panel"
+      action="/cars"
+      method="get"
+      onSubmit={(event) => {
+        const form = new FormData(event.currentTarget);
+        trackEvent("filter_search_submit", {
+          make: String(form.get("make") || ""),
+          model: String(form.get("model") || ""),
+          budget: String(form.get("budget") || ""),
+          seats: String(form.get("seats") || ""),
+          body: String(form.get("body") || ""),
+        });
+      }}
+    >
       <div className="v4-search-heading">
         <div><span className="v3-mono">PREFER FILTERS?</span><strong>Search with exact fields</strong></div>
         <Link href="/cars">See all cars →</Link>

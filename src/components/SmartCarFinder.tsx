@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Mic, MicOff, Search, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics/client";
 
 type SpeechResultEvent = {
   results: {
@@ -71,7 +72,10 @@ export default function SmartCarFinder({
 
     recognition.onresult = (event) => {
       const transcript = event.results[0]?.[0]?.transcript?.trim();
-      if (transcript) setQuery(transcript);
+      if (transcript) {
+        setQuery(transcript);
+        trackEvent("voice_search_completed", { query: transcript });
+      }
     };
     recognition.onerror = () => setListening(false);
     recognition.onend = () => {
@@ -81,6 +85,7 @@ export default function SmartCarFinder({
 
     recognitionRef.current = recognition;
     setListening(true);
+    trackEvent("voice_search_started");
     recognition.start();
   }
 
@@ -105,7 +110,7 @@ export default function SmartCarFinder({
         </div>
       )}
 
-      <form action="/cars" method="get" className="smart-finder-form">
+      <form action="/cars" method="get" className="smart-finder-form" onSubmit={() => trackEvent("smart_search_submit", { query: query.trim(), input_method: listening ? "voice" : "text" })}>
         <div className="smart-finder-input">
           <input
             name="q"
