@@ -75,7 +75,7 @@ export default async function ContactPage({
             </div>
 
             <LeadCaptureForm
-              vehicleSlug={car?.slug ?? ""}
+              vehicleSlug={vehicleSlug}
               vehicleLabel={vehicleLabel}
               intent={intent}
             />
