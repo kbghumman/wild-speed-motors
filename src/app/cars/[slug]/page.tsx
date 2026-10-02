@@ -1,10 +1,10 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { getPublicCarBySlug } from "@/lib/inventory";
 import { formatUSD } from "@/lib/currency";
+import VehicleGallery from "@/components/VehicleGallery";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -38,19 +38,11 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
         <section className="section v4-detail-section">
           <div className="container detail-grid v4-detail-grid">
             <div>
-              <div className="detail-image v4-detail-image">
-                {car.image ? <Image src={car.image} alt={car.make + " " + car.model + " " + car.trim} fill sizes="(max-width: 900px) 100vw, 68vw" priority quality={75} /> : <div className="v4-car-image-placeholder">Photo coming soon</div>}
-              </div>
-
-              {car.images && car.images.length > 1 && (
-                <div className="detail-gallery-strip">
-                  {car.images.slice(1, 7).map((image, index) => (
-                    <div className="v4-gallery-thumb" key={image}>
-                      <Image src={image} alt={car.make + " " + car.model + " gallery image " + (index + 2)} fill sizes="16vw" quality={65} />
-                    </div>
-                  ))}
-                </div>
-              )}
+              <VehicleGallery
+                coverImage={car.image}
+                images={car.images}
+                alt={car.make + " " + car.model + " " + car.trim}
+              />
 
               <div className="detail-specs">
                 {specs.map(([label, value]) => <div className="spec-box" key={String(label)}><span>{label}</span><strong>{value}</strong></div>)}
