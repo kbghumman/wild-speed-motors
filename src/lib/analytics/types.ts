@@ -1,0 +1,142 @@
+export type InventoryAnalyticsVehicle = {
+  id: string;
+  slug: string;
+  stock_number: string | null;
+  make: string;
+  model: string;
+  trim: string | null;
+  year: number;
+  status: string;
+  price_usd: number;
+  mileage: number;
+  cover_image_url: string | null;
+  published_at: string | null;
+  days_listed: number;
+  impressions: number;
+  impression_viewers: number;
+  list_clicks: number;
+  list_clickers: number;
+  vdp_views: number;
+  unique_viewers: number;
+  vdp_sessions: number;
+  returning_viewers: number;
+  gallery_viewers: number;
+  gallery_actions: number;
+  avg_unique_photos: number;
+  avg_engaged_seconds: number;
+  deep_scroll_viewers: number;
+  enquiry_clicks: number;
+  test_drive_clicks: number;
+  finance_clicks: number;
+  trade_in_clicks: number;
+  contact_page_views: number;
+  contact_option_clicks: number;
+  intent_visitors: number;
+  views_per_day: number;
+  list_ctr: number;
+  return_rate: number;
+  gallery_rate: number;
+  intent_rate: number;
+};
+
+export type InventoryAnalyticsData = {
+  days: number;
+  summary: {
+    visitors: number;
+    sessions: number;
+    page_views: number;
+    searchers: number;
+    searches: number;
+    vdp_viewers: number;
+    vdp_views: number;
+    intent_visitors: number;
+    intent_actions: number;
+  };
+  vehicles: InventoryAnalyticsVehicle[];
+  search_demand: Array<{
+    query: string;
+    searches: number;
+    avg_results: number | null;
+    zero_results: number;
+  }>;
+  sources: Array<{ source: string; visitors: number }>;
+};
+
+export type VehicleAnalyticsData = {
+  days: number;
+  vehicle: {
+    id: string;
+    slug: string;
+    stock_number: string | null;
+    make: string;
+    model: string;
+    trim: string | null;
+    year: number;
+    status: string;
+    price_usd: number;
+    mileage: number;
+    cover_image_url: string | null;
+    published_at: string | null;
+    created_at: string;
+    days_listed: number;
+  };
+  summary: {
+    impressions: number;
+    impression_viewers: number;
+    list_clicks: number;
+    list_clickers: number;
+    vdp_views: number;
+    unique_viewers: number;
+    sessions: number;
+    returning_viewers: number;
+    gallery_viewers: number;
+    gallery_actions: number;
+    avg_unique_photos: number;
+    avg_engaged_seconds: number;
+    deep_scroll_viewers: number;
+    fullscreen_opens: number;
+    enquiry_clicks: number;
+    test_drive_clicks: number;
+    finance_clicks: number;
+    trade_in_clicks: number;
+    contact_page_views: number;
+    contact_option_clicks: number;
+    intent_visitors: number;
+    list_ctr: number;
+    return_rate: number;
+    gallery_rate: number;
+    deep_scroll_rate: number;
+    intent_rate: number;
+  };
+  daily: Array<{
+    day: string;
+    impressions: number;
+    list_clicks: number;
+    vdp_views: number;
+    unique_viewers: number;
+    gallery_viewers: number;
+    intent_visitors: number;
+  }>;
+  ctas: Array<{
+    event_name: string;
+    clicks: number;
+    visitors: number;
+  }>;
+  photos: Array<{
+    photo_index: number;
+    views: number;
+    viewers: number;
+    thumbnail_clicks: number;
+  }>;
+  sources: Array<{ source: string; viewers: number }>;
+  devices: Array<{ device: string; viewers: number }>;
+  countries: Array<{ country: string; viewers: number }>;
+  recent: Array<{
+    occurred_at: string;
+    event_name: string;
+    path: string;
+    visitor_id: string;
+    session_id: string;
+    properties: Record<string, unknown> | null;
+  }>;
+};

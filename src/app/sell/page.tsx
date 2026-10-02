@@ -2,11 +2,28 @@ import Link from "next/link";
 import { ArrowRight, Camera, CarFront, ClipboardCheck, RefreshCcw } from "lucide-react";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+import TrackEventOnView from "@/components/analytics/TrackEventOnView";
 
-export default function SellPage() {
+export const dynamic = "force-dynamic";
+
+export default async function SellPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ vehicle?: string }>;
+}) {
+  const params = await searchParams;
+  const vehicleSlug = params.vehicle?.trim() || "";
+
   return (
     <>
       <Header />
+      {vehicleSlug && (
+        <TrackEventOnView
+          eventName="trade_in_page_view"
+          vehicleSlug={vehicleSlug}
+          properties={{ source: "vehicle_detail" }}
+        />
+      )}
       <main>
         <section className="editorial-hero sell-hero">
           <div className="container editorial-hero-grid">
@@ -14,7 +31,7 @@ export default function SellPage() {
               <p className="eyebrow">Sell or trade</p>
               <h1>Your current car <span>can move you forward.</span></h1>
               <p>Start a valuation, discuss a trade-in, or use your current vehicle toward your next purchase.</p>
-              <Link href="/contact" className="button-primary">Start a valuation <ArrowRight size={17} /></Link>
+              <Link href={vehicleSlug ? "/contact?vehicle=" + encodeURIComponent(vehicleSlug) + "&intent=trade-in" : "/contact"} className="button-primary">Start a valuation <ArrowRight size={17} /></Link>
             </div>
             <div className="hero-graphic sell-graphic">
               <CarFront size={64} />

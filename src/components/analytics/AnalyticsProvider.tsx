@@ -16,12 +16,15 @@ export default function AnalyticsProvider() {
   useEffect(() => {
     if (!pathname || pathname.startsWith("/admin") || pathname.startsWith("/api")) return;
 
+    const vehicleMatch = pathname.match(/^\/cars\/([^/]+)$/);
+    const vehicleSlug = vehicleMatch ? decodeURIComponent(vehicleMatch[1]) : undefined;
+
     pageStartedAt.current = Date.now();
     reachedDepths.current = new Set();
     engagementSent.current = false;
 
     if (lastPath.current !== pathname) {
-      trackEvent("page_view", { title: document.title });
+      trackEvent("page_view", { title: document.title }, { vehicleSlug });
       lastPath.current = pathname;
     }
 
@@ -38,7 +41,7 @@ export default function AnalyticsProvider() {
       for (const depth of depths) {
         if (percent >= depth && !reachedDepths.current.has(depth)) {
           reachedDepths.current.add(depth);
-          trackEvent("scroll_depth", { depth });
+          trackEvent("scroll_depth", { depth }, { vehicleSlug });
         }
       }
     }
@@ -54,7 +57,7 @@ export default function AnalyticsProvider() {
             seconds,
             max_scroll_depth: Math.max(0, ...Array.from(reachedDepths.current)),
           },
-          { beacon: true },
+          { beacon: true, vehicleSlug },
         );
       }
     }
@@ -95,10 +98,14 @@ export default function AnalyticsProvider() {
           // Keep raw destination.
         }
 
-        trackEvent("link_click", {
-          destination: destination.slice(0, 300),
-          label: element.textContent?.trim().replace(/\s+/g, " ").slice(0, 120) || null,
-        });
+        trackEvent(
+          "link_click",
+          {
+            destination: destination.slice(0, 300),
+            label: element.textContent?.trim().replace(/\s+/g, " ").slice(0, 120) || null,
+          },
+          { vehicleSlug },
+        );
       }
     }
 

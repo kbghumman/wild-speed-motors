@@ -2,11 +2,28 @@ import Link from "next/link";
 import { ArrowRight, BadgeDollarSign, FileCheck2, MessageSquareText, ShieldCheck } from "lucide-react";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+import TrackEventOnView from "@/components/analytics/TrackEventOnView";
 
-export default function FinancePage() {
+export const dynamic = "force-dynamic";
+
+export default async function FinancePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ vehicle?: string }>;
+}) {
+  const params = await searchParams;
+  const vehicleSlug = params.vehicle?.trim() || "";
+
   return (
     <>
       <Header />
+      {vehicleSlug && (
+        <TrackEventOnView
+          eventName="finance_page_view"
+          vehicleSlug={vehicleSlug}
+          properties={{ source: "vehicle_detail" }}
+        />
+      )}
       <main>
         <section className="editorial-hero finance-hero">
           <div className="container editorial-hero-grid">
@@ -16,7 +33,7 @@ export default function FinancePage() {
               <p>Explore vehicles by monthly budget and speak with us about available financing options. Final approval, terms and eligibility depend on the lender.</p>
               <div className="hero-actions">
                 <Link href="/cars" className="button-primary">Browse inventory <ArrowRight size={17} /></Link>
-                <Link href="/contact" className="button-secondary">Ask a finance question</Link>
+                <Link href={vehicleSlug ? "/contact?vehicle=" + encodeURIComponent(vehicleSlug) + "&intent=finance" : "/contact"} className="button-secondary">Ask a finance question</Link>
               </div>
             </div>
             <div className="hero-graphic finance-meter">
@@ -63,7 +80,7 @@ export default function FinancePage() {
               <h2>Finance figures on the prototype are illustrative.</h2>
               <p>We will replace demo monthly figures with the actual lender or finance-provider calculation before launch.</p>
             </div>
-            <Link href="/contact" className="button-dark">Contact us</Link>
+            <Link href={vehicleSlug ? "/contact?vehicle=" + encodeURIComponent(vehicleSlug) + "&intent=finance" : "/contact"} className="button-dark">Contact us</Link>
           </div>
         </section>
       </main>

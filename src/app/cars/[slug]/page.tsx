@@ -76,10 +76,10 @@ export default async function CarDetailPage({ params }: { params: Promise<{ slug
               {car.monthly > 0 && <p className="v4-finance-note">Indicative from <strong>{formatUSD(car.monthly)}/month</strong></p>}
               {car.stockNumber && <p className="v3-mono">STOCK {car.stockNumber}</p>}
               <div className="detail-actions">
-                <Link href="/contact" className="button-primary" data-analytics-event="enquiry_click" data-analytics-label="Enquire about this car" data-vehicle-slug={car.slug}>Enquire about this car</Link>
-                <Link href="/contact" className="button-secondary" data-analytics-event="test_drive_click" data-analytics-label="Book a test drive" data-vehicle-slug={car.slug}>Book a test drive</Link>
-                <Link href="/finance" className="button-secondary" data-analytics-event="finance_click" data-analytics-label="Finance options" data-vehicle-slug={car.slug}>Finance options</Link>
-                <Link href="/sell" className="button-secondary" data-analytics-event="trade_in_click" data-analytics-label="Trade in my car" data-vehicle-slug={car.slug}>Trade in my car</Link>
+                <Link href={"/contact?vehicle=" + encodeURIComponent(car.slug) + "&intent=enquiry"} className="button-primary" data-analytics-event="enquiry_click" data-analytics-label="Enquire about this car" data-vehicle-slug={car.slug}>Enquire about this car</Link>
+                <Link href={"/contact?vehicle=" + encodeURIComponent(car.slug) + "&intent=test-drive"} className="button-secondary" data-analytics-event="test_drive_click" data-analytics-label="Book a test drive" data-vehicle-slug={car.slug}>Book a test drive</Link>
+                <Link href={"/finance?vehicle=" + encodeURIComponent(car.slug)} className="button-secondary" data-analytics-event="finance_click" data-analytics-label="Finance options" data-vehicle-slug={car.slug}>Finance options</Link>
+                <Link href={"/sell?vehicle=" + encodeURIComponent(car.slug)} className="button-secondary" data-analytics-event="trade_in_click" data-analytics-label="Trade in my car" data-vehicle-slug={car.slug}>Trade in my car</Link>
               </div>
             </aside>
           </div>

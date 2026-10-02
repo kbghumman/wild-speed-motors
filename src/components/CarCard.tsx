@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles } from "lucide-react";
+import { useEffect, useRef } from "react";
 import type { Car } from "@/data/cars";
 import { formatUSD } from "@/lib/currency";
+import { trackEvent } from "@/lib/analytics/client";
 
 export default function CarCard({
   car,
@@ -11,8 +15,69 @@ export default function CarCard({
   car: Car;
   matchReasons?: string[];
 }) {
+  const cardRef = useRef<HTMLAnchorElement | null>(null);
+  const impressionSent = useRef(false);
+
+  useEffect(() => {
+    const node = cardRef.current;
+    if (!node || impressionSent.current) return;
+
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+          if (timer || impressionSent.current) return;
+          timer = setTimeout(() => {
+            impressionSent.current = true;
+            trackEvent(
+              "vehicle_impression",
+              {
+                make: car.make,
+                model: car.model,
+                year: car.year,
+                price: car.price,
+                surface: window.location.pathname,
+              },
+              { vehicleSlug: car.slug },
+            );
+            observer.disconnect();
+          }, 500);
+        } else if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
+      },
+      { threshold: [0.6] },
+    );
+
+    observer.observe(node);
+
+    return () => {
+      if (timer) clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, [car.make, car.model, car.price, car.slug, car.year]);
+
   return (
-    <Link href={"/cars/" + car.slug} className="v3-car-card" data-analytics-event="car_card_click" data-analytics-label={car.make + " " + car.model} data-vehicle-slug={car.slug}>
+    <Link
+      ref={cardRef}
+      href={"/cars/" + car.slug}
+      className="v3-car-card"
+      onClick={() =>
+        trackEvent(
+          "car_card_click",
+          {
+            make: car.make,
+            model: car.model,
+            year: car.year,
+            price: car.price,
+            surface: window.location.pathname,
+          },
+          { vehicleSlug: car.slug },
+        )
+      }
+    >
       <div className="v3-car-image">
         {car.image ? (
           <Image
