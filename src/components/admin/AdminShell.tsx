@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, CarFront, LayoutDashboard, LogOut, Plus, Settings } from "lucide-react";
+import { ArrowLeft, BarChart3, CarFront, LayoutDashboard, LogOut, Plus, Settings } from "lucide-react";
 import { signOut } from "@/app/admin/actions";
 
 export default function AdminShell({
@@ -27,6 +27,10 @@ export default function AdminShell({
           <Link href="/admin/vehicles/new" className="admin-nav-primary">
             <Plus size={17} />
             Add vehicle
+          </Link>
+          <Link href="/admin/analytics">
+            <BarChart3 size={17} />
+            Analytics
           </Link>
           <Link href="/cars">
             <CarFront size={17} />
