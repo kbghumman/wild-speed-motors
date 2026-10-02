@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import "./design-v3.css";
+import AnalyticsProvider from "@/components/analytics/AnalyticsProvider";
 
 const sans = Space_Grotesk({
   subsets: ["latin"],
@@ -30,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={sans.variable + " " + mono.variable}>
-      <body>{children}</body>
+      <body><AnalyticsProvider />{children}</body>
     </html>
   );
 }
