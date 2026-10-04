@@ -3461,3 +3461,452 @@ body { font-size: 16px; line-height: 1.55; }
     font-size: 8px;
   }
 }
+
+
+/* === V17 refined multi-colour 3D manufacturer tiles === */
+.v14-brand-grid {
+  grid-auto-rows: 172px;
+  gap: 16px;
+}
+
+.v14-brand-card {
+  --logo-w: 92px;
+  --logo-h: 52px;
+  --tile-shadow: rgba(0,0,0,.30);
+  overflow: hidden;
+  padding: 24px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(255,255,255,.18), transparent 34%),
+    linear-gradient(145deg, #23262a 0%, #111315 100%);
+  box-shadow:
+    0 18px 30px var(--tile-shadow),
+    0 7px 0 rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.20),
+    inset 0 -1px 0 rgba(0,0,0,.24);
+}
+
+.v14-brand-card::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(118deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.035) 26%, transparent 47%),
+    radial-gradient(circle at 86% 86%, rgba(0,0,0,.18), transparent 42%);
+  pointer-events: none;
+}
+
+.v14-brand-card::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 18px;
+  right: 18px;
+  bottom: -9px;
+  height: 18px;
+  border-radius: 0 0 18px 18px;
+  background: rgba(0,0,0,.32);
+  filter: blur(1px);
+  opacity: .82;
+  pointer-events: none;
+}
+
+.v14-brand-card:hover {
+  transform: perspective(1100px) rotateX(2.3deg) rotateY(-2.3deg) translateY(-7px);
+  box-shadow:
+    0 30px 46px var(--tile-shadow),
+    0 9px 0 rgba(0,0,0,.30),
+    inset 0 1px 0 rgba(255,255,255,.23),
+    inset 0 -1px 0 rgba(0,0,0,.24);
+}
+
+.v14-brand-rank {
+  top: 20px;
+  left: 22px;
+  color: rgba(255,255,255,.64);
+  font-size: 10px;
+}
+
+.v15-brand-logo-stage {
+  position: absolute;
+  z-index: 3;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  width: 132px;
+  height: 86px;
+  place-items: center;
+  margin: 0;
+  border: 1px solid rgba(255,255,255,.19);
+  border-radius: 19px;
+  background:
+    linear-gradient(145deg, rgba(12,14,16,.30), rgba(12,14,16,.12));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.17),
+    inset 0 -1px 0 rgba(0,0,0,.12),
+    0 14px 24px rgba(0,0,0,.13);
+  backdrop-filter: blur(8px);
+  transform: translateZ(20px);
+}
+
+.v14-brand-logo,
+.v14-brand-xl .v14-brand-logo,
+.v14-brand-large .v14-brand-logo,
+.v14-brand-medium .v14-brand-logo,
+.v14-brand-small .v14-brand-logo {
+  position: static;
+  display: grid;
+  width: 112px;
+  height: 66px;
+  place-items: center;
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+.v14-brand-logo .brand-logo-image {
+  display: block;
+  width: var(--logo-w);
+  height: var(--logo-h);
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+  filter:
+    brightness(0)
+    invert(1)
+    drop-shadow(0 2px 9px rgba(0,0,0,.22));
+  transform: none;
+  transform-origin: center;
+  transition: transform .2s ease;
+}
+
+.v14-brand-card:hover .v14-brand-logo,
+.v14-brand-card:hover .v14-brand-logo .brand-logo-image {
+  opacity: 1;
+  filter: none;
+}
+
+.v14-brand-card:hover .v14-brand-logo .brand-logo-image {
+  filter:
+    brightness(0)
+    invert(1)
+    drop-shadow(0 4px 12px rgba(0,0,0,.24));
+  transform: scale(1.035);
+}
+
+.v14-brand-copy {
+  position: relative;
+  z-index: 3;
+  margin-top: auto;
+  color: #fff;
+  transform: translateZ(16px);
+}
+
+.v14-brand-copy strong,
+.v14-brand-copy small,
+.v14-brand-copy span {
+  display: block;
+}
+
+.v14-brand-copy strong {
+  color: #fff;
+  font-size: 23px;
+  font-weight: 720;
+  line-height: .98;
+  letter-spacing: -.045em;
+  text-shadow: 0 2px 16px rgba(0,0,0,.18);
+}
+
+.v14-brand-xl .v14-brand-copy strong {
+  font-size: clamp(46px, 4vw, 62px);
+}
+
+.v14-brand-large .v14-brand-copy strong {
+  font-size: 33px;
+}
+
+.v14-brand-medium .v14-brand-copy strong,
+.v14-brand-small .v14-brand-copy strong {
+  font-size: 23px;
+}
+
+.v14-brand-copy small {
+  margin-top: 9px;
+  color: rgba(255,255,255,.78);
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .045em;
+}
+
+.v14-brand-copy span,
+.v14-brand-small .v14-brand-copy span {
+  display: block;
+  margin-top: 10px;
+  color: rgba(255,255,255,.94);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* BMW: navy body with BMW/M-inspired light blue, blue, white and red bands. */
+.v14-brand-bmw {
+  --logo-w: 64px;
+  --logo-h: 64px;
+  --tile-shadow: rgba(5,40,76,.36);
+  background:
+    linear-gradient(132deg,
+      transparent 0%,
+      transparent 58%,
+      rgba(255,255,255,.96) 58%,
+      rgba(255,255,255,.96) 63%,
+      #79c7ef 63%,
+      #79c7ef 69%,
+      #1c69d4 69%,
+      #1c69d4 75%,
+      #e21b2d 75%,
+      #e21b2d 81%,
+      transparent 81%),
+    radial-gradient(circle at 18% 9%, rgba(255,255,255,.24), transparent 34%),
+    linear-gradient(145deg, #173d69 0%, #0a2440 52%, #04111f 100%);
+}
+
+/* Mercedes-Benz: silver, white and graphite metallic layers. */
+.v14-brand-mercedes-benz {
+  --logo-w: 66px;
+  --logo-h: 66px;
+  --tile-shadow: rgba(20,24,28,.34);
+  background:
+    linear-gradient(132deg,
+      transparent 0 62%,
+      rgba(255,255,255,.36) 62% 68%,
+      rgba(185,194,201,.64) 68% 76%,
+      transparent 76%),
+    radial-gradient(circle at 18% 9%, rgba(255,255,255,.28), transparent 34%),
+    linear-gradient(145deg, #747d85 0%, #434a50 46%, #171a1d 100%);
+}
+
+/* Audi: graphite body, silver light and signature red slash. */
+.v14-brand-audi {
+  --logo-w: 106px;
+  --logo-h: 38px;
+  --tile-shadow: rgba(18,20,23,.36);
+  background:
+    linear-gradient(132deg,
+      transparent 0 64%,
+      rgba(255,255,255,.22) 64% 70%,
+      #d0002f 70% 79%,
+      transparent 79%),
+    radial-gradient(circle at 18% 9%, rgba(255,255,255,.18), transparent 34%),
+    linear-gradient(145deg, #3a3d42 0%, #202327 48%, #0e1012 100%);
+}
+
+/* Toyota: Toyota red with white and charcoal performance bands. */
+.v14-brand-toyota {
+  --logo-w: 112px;
+  --logo-h: 30px;
+  --tile-shadow: rgba(111,0,14,.35);
+  background:
+    linear-gradient(132deg,
+      transparent 0 60%,
+      rgba(255,255,255,.94) 60% 66%,
+      #2c2f33 66% 73%,
+      rgba(255,255,255,.18) 73% 77%,
+      transparent 77%),
+    radial-gradient(circle at 18% 8%, rgba(255,255,255,.24), transparent 34%),
+    linear-gradient(145deg, #f11b2d 0%, #c6071d 52%, #76000f 100%);
+}
+
+/* Honda: racing red, white and deep charcoal. */
+.v14-brand-honda {
+  --logo-w: 70px;
+  --logo-h: 64px;
+  --tile-shadow: rgba(112,0,8,.35);
+  background:
+    linear-gradient(132deg,
+      transparent 0 61%,
+      rgba(255,255,255,.94) 61% 67%,
+      #222529 67% 75%,
+      transparent 75%),
+    radial-gradient(circle at 18% 8%, rgba(255,255,255,.24), transparent 34%),
+    linear-gradient(145deg, #e5202a 0%, #bd0916 52%, #6b0008 100%);
+}
+
+/* Mitsubishi: vivid red with black and white geometric banding. */
+.v14-brand-mitsubishi {
+  --logo-w: 66px;
+  --logo-h: 60px;
+  --tile-shadow: rgba(125,0,12,.35);
+  background:
+    linear-gradient(132deg,
+      transparent 0 58%,
+      #17191c 58% 66%,
+      rgba(255,255,255,.95) 66% 72%,
+      transparent 72%),
+    radial-gradient(circle at 18% 8%, rgba(255,255,255,.22), transparent 34%),
+    linear-gradient(145deg, #f11c2e 0%, #c70017 54%, #79000b 100%);
+}
+
+/* Nissan: graphite/silver with a burgundy-red accent. */
+.v14-brand-nissan {
+  --logo-w: 74px;
+  --logo-h: 62px;
+  --tile-shadow: rgba(9,11,13,.39);
+  background:
+    linear-gradient(132deg,
+      transparent 0 62%,
+      rgba(215,221,225,.50) 62% 69%,
+      #b40b37 69% 77%,
+      transparent 77%),
+    radial-gradient(circle at 18% 8%, rgba(255,255,255,.18), transparent 34%),
+    linear-gradient(145deg, #50565b 0%, #2b3034 50%, #111315 100%);
+}
+
+/* Subaru: rally blue, silver and gold constellation accents. */
+.v14-brand-subaru {
+  --logo-w: 114px;
+  --logo-h: 26px;
+  --tile-shadow: rgba(9,43,96,.36);
+  background:
+    radial-gradient(circle at 78% 25%, #ffd34d 0 3px, transparent 4px),
+    radial-gradient(circle at 84% 32%, #ffd34d 0 2px, transparent 3px),
+    radial-gradient(circle at 73% 36%, #ffd34d 0 2.5px, transparent 3.5px),
+    linear-gradient(132deg,
+      transparent 0 62%,
+      rgba(226,233,239,.72) 62% 68%,
+      rgba(255,211,77,.86) 68% 73%,
+      transparent 73%),
+    radial-gradient(circle at 18% 8%, rgba(255,255,255,.22), transparent 34%),
+    linear-gradient(145deg, #2f72d6 0%, #154f9f 52%, #08275b 100%);
+}
+
+/* Mazda: soul-red inspired body with black and metallic silver. */
+.v14-brand-mazda {
+  --logo-w: 68px;
+  --logo-h: 60px;
+  --tile-shadow: rgba(80,0,18,.36);
+  background:
+    linear-gradient(132deg,
+      transparent 0 61%,
+      #17191c 61% 68%,
+      rgba(228,232,235,.65) 68% 73%,
+      transparent 73%),
+    radial-gradient(circle at 18% 8%, rgba(255,255,255,.22), transparent 34%),
+    linear-gradient(145deg, #c1163a 0%, #8d0827 50%, #4a0011 100%);
+}
+
+/* Lexus: deep graphite with satin silver and champagne warmth. */
+.v14-brand-lexus {
+  --logo-w: 112px;
+  --logo-h: 32px;
+  --tile-shadow: rgba(10,11,12,.38);
+  background:
+    linear-gradient(132deg,
+      transparent 0 62%,
+      rgba(220,224,226,.62) 62% 69%,
+      rgba(196,171,126,.44) 69% 75%,
+      transparent 75%),
+    radial-gradient(circle at 18% 8%, rgba(255,255,255,.18), transparent 34%),
+    linear-gradient(145deg, #5b6065 0%, #33373b 52%, #151719 100%);
+}
+
+/* MINI: black/white with British-racing-green and a warm metallic accent. */
+.v14-brand-mini {
+  --logo-w: 104px;
+  --logo-h: 46px;
+  --tile-shadow: rgba(0,0,0,.42);
+  background:
+    linear-gradient(132deg,
+      transparent 0 58%,
+      rgba(255,255,255,.94) 58% 64%,
+      #0f5d42 64% 72%,
+      rgba(203,177,108,.78) 72% 77%,
+      transparent 77%),
+    radial-gradient(circle at 18% 8%, rgba(255,255,255,.18), transparent 34%),
+    linear-gradient(145deg, #2b2e30 0%, #17191b 52%, #050505 100%);
+}
+
+@media (max-width: 980px) {
+  .v14-brand-grid {
+    grid-auto-rows: 166px;
+  }
+
+  .v15-brand-logo-stage {
+    width: 124px;
+    height: 82px;
+  }
+
+  .v14-brand-xl .v14-brand-copy strong {
+    font-size: clamp(40px, 5vw, 54px);
+  }
+
+  .v14-brand-large .v14-brand-copy strong {
+    font-size: 29px;
+  }
+}
+
+@media (max-width: 640px) {
+  .v14-brand-grid {
+    grid-auto-rows: 150px;
+    gap: 11px;
+  }
+
+  .v14-brand-card {
+    padding: 16px;
+    border-radius: 17px;
+  }
+
+  .v14-brand-rank {
+    top: 14px;
+    left: 15px;
+    font-size: 8px;
+  }
+
+  .v15-brand-logo-stage {
+    top: 12px;
+    right: 12px;
+    width: 88px;
+    height: 58px;
+    border-radius: 13px;
+  }
+
+  .v14-brand-logo,
+  .v14-brand-xl .v14-brand-logo,
+  .v14-brand-large .v14-brand-logo,
+  .v14-brand-medium .v14-brand-logo,
+  .v14-brand-small .v14-brand-logo {
+    width: 76px;
+    height: 48px;
+  }
+
+  .v14-brand-logo .brand-logo-image {
+    width: calc(var(--logo-w) * .72);
+    height: calc(var(--logo-h) * .72);
+  }
+
+  .v14-brand-copy strong,
+  .v14-brand-medium .v14-brand-copy strong,
+  .v14-brand-small .v14-brand-copy strong {
+    font-size: 18px;
+  }
+
+  .v14-brand-large .v14-brand-copy strong {
+    font-size: 25px;
+  }
+
+  .v14-brand-xl .v14-brand-copy strong {
+    font-size: 36px;
+  }
+
+  .v14-brand-copy small {
+    font-size: 8px;
+  }
+
+  .v14-brand-copy span,
+  .v14-brand-small .v14-brand-copy span {
+    margin-top: 7px;
+    font-size: 9px;
+  }
+}
