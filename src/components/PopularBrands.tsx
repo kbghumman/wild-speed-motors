@@ -66,7 +66,9 @@ export default function PopularBrands({ cars }: { cars: Car[] }) {
                 {String(rank + 1).padStart(2, "0")}
               </span>
 
-              <BrandLogo brand={brand} className="v14-brand-logo" />
+              <span className="v15-brand-logo-stage">
+                <BrandLogo brand={brand} className="v14-brand-logo" />
+              </span>
 
               <div className="v14-brand-copy">
                 <strong>{brand}</strong>
