@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export default async function ContactPage({
   searchParams,
 }: {
-  searchParams: Promise<{ vehicle?: string; intent?: string }>;
+  searchParams: Promise<{ vehicle?: string; intent?: string; request?: string }>;
 }) {
   const params = await searchParams;
   const vehicleSlug = params.vehicle?.trim() || "";
@@ -46,6 +46,11 @@ export default async function ContactPage({
                   You are asking about the {vehicleLabel}. Send the request below and it will enter
                   the dealer lead queue attached to this exact vehicle.
                 </p>
+              ) : requestedCar ? (
+                <p>
+                  We do not currently have to pretend this car is in stock. Your request is prefilled below
+                  so the showroom can follow it as a sourcing enquiry.
+                </p>
               ) : (
                 <p>Ask about stock, test drives, trade-ins or finance. Your enquiry enters the dealer CRM so it can be followed through to an outcome.</p>
               )}
@@ -79,6 +84,7 @@ export default async function ContactPage({
               vehicleSlug={vehicleSlug}
               vehicleLabel={vehicleLabel}
               intent={intent}
+              initialMessage={requestedCar ? "I am looking for: " + requestedCar : ""}
             />
           </div>
         </section>
