@@ -37,13 +37,6 @@ export default function PopularBrands({ cars }: { cars: Car[] }) {
           <div>
             <h2>Browse by manufacturer.</h2>
           </div>
-          <div className="v3-section-intro-copy">
-            <p>
-              Open a manufacturer to see its current live stock. Counts update
-              automatically whenever a vehicle is published.
-            </p>
-            <Link href="/brands">View all manufacturers →</Link>
-          </div>
         </div>
 
         <div className="v3-brand-stage v4-brand-stage">
