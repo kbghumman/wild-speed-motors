@@ -2603,3 +2603,57 @@ body { font-size: 16px; line-height: 1.55; }
     width: 100%;
   }
 }
+
+
+/* === V12 restore original search-first shopping flow; no hero === */
+.v12-inventory-count {
+  background: #f6f3ee;
+  border-bottom: 1px solid rgba(17,18,20,.08);
+  padding: 18px 0 8px;
+}
+
+.v12-inventory-count-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #777a76;
+  font-family: var(--font-mono), monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.v12-inventory-count-inner strong {
+  margin-left: auto;
+  border-radius: 999px;
+  background: #17191b;
+  padding: 8px 11px;
+  color: #fff;
+  font-size: 8px;
+  letter-spacing: .07em;
+}
+
+.v12-inventory-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #76a63f;
+  box-shadow: 0 0 0 4px rgba(118,166,63,.12);
+}
+
+.v12-inventory-count + .v6-smart-wrap {
+  margin-top: 0;
+  padding-top: 18px;
+}
+
+@media (max-width: 700px) {
+  .v12-inventory-count-inner {
+    flex-wrap: wrap;
+  }
+
+  .v12-inventory-count-inner strong {
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
+  }
+}
