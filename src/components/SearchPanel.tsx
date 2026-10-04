@@ -28,9 +28,6 @@ export default function SearchPanel() {
       <div className="v4-search-heading">
         <div>
           <strong>Search live stock</strong>
-          <small className="v20-live-filter-note">
-            {loading ? "Checking current inventory…" : data.total + " cars match these choices"}
-          </small>
         </div>
         <Link href="/cars">See all cars →</Link>
       </div>
