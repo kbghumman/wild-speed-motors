@@ -41,10 +41,12 @@ export default function LeadCaptureForm({
   vehicleSlug = "",
   vehicleLabel = "",
   intent = "general",
+  initialMessage = "",
 }: {
   vehicleSlug?: string;
   vehicleLabel?: string;
   intent?: string;
+  initialMessage?: string;
 }) {
   const copy = intentCopy[intent] ?? intentCopy.general;
   const [sending, setSending] = useState(false);
@@ -53,12 +55,13 @@ export default function LeadCaptureForm({
   const started = useRef(false);
 
   const defaultMessage = useMemo(() => {
+    if (initialMessage) return initialMessage;
     if (!vehicleLabel) return "";
     if (intent === "test-drive") return "I would like to arrange a test drive for " + vehicleLabel + ".";
     if (intent === "finance") return "I would like to ask about finance options for " + vehicleLabel + ".";
     if (intent === "trade-in") return "I am interested in " + vehicleLabel + " and would like to discuss a trade-in.";
     return "I am interested in " + vehicleLabel + ".";
-  }, [intent, vehicleLabel]);
+  }, [initialMessage, intent, vehicleLabel]);
 
   function markStarted() {
     if (started.current) return;

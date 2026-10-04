@@ -15,6 +15,7 @@ export default async function ContactPage({
   const params = await searchParams;
   const vehicleSlug = params.vehicle?.trim() || "";
   const intent = params.intent?.trim() || "general";
+  const requestedCar = params.request?.trim().slice(0, 500) || "";
   const car = vehicleSlug ? await getPublicCarBySlug(vehicleSlug) : null;
   const vehicleLabel = car
     ? car.year + " " + car.make + " " + car.model + (car.trim ? " " + car.trim : "")

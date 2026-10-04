@@ -4,7 +4,6 @@ import SiteFooter from "@/components/SiteFooter";
 import CarCard from "@/components/CarCard";
 import SmartCarFinder from "@/components/SmartCarFinder";
 import InventoryFilters, { type InventoryFilterValues } from "@/components/InventoryFilters";
-import { getModelsForManufacturer } from "@/data/models";
 import { getPublicCars } from "@/lib/inventory";
 import { runSmartCarSearch } from "@/lib/smart-car-search";
 import TrackEventOnView from "@/components/analytics/TrackEventOnView";
@@ -100,6 +99,8 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
             near_count: smart.nearMatches.length,
             zero_results: results.length === 0,
             understood: smart.intent.understood,
+            requested_make: smart.intent.make ?? "",
+            requested_model: smart.intent.model ?? "",
           }}
         />
       )}
@@ -148,6 +149,18 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
                   Try including a budget, seats, make, body type, fuel, transmission or feature.
                 </p>
               )}
+
+              {showingNearMatches && (
+                <div className="v20-request-car">
+                  <div>
+                    <strong>The exact car is not in live stock.</strong>
+                    <span>These are the closest available alternatives. You can also tell us exactly what you want.</span>
+                  </div>
+                  <Link href={"/contact?request=" + encodeURIComponent(naturalQuery)}>
+                    Request this car
+                  </Link>
+                </div>
+              )}
             </div>
           </section>
         )}
@@ -156,7 +169,6 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
           <div className="container inventory-layout v4-inventory-layout">
             <InventoryFilters
               initial={initial}
-              initialModels={initial.make ? getModelsForManufacturer(initial.make) : []}
               naturalQuery={naturalQuery}
             />
 
@@ -183,7 +195,15 @@ export default async function CarsPage({ searchParams }: { searchParams: SearchP
                 <div className="empty-state v4-empty-state">
                   <h2>No live car matches that request yet.</h2>
                   <p>Try relaxing one requirement, changing the budget, or describe the need in a different way.</p>
-                  <Link href="/cars" className="v3-primary-action">Show all cars</Link>
+                  <div className="v20-empty-actions">
+                    <Link href="/cars" className="v3-primary-action">Show all cars</Link>
+                    <Link
+                      href={"/contact?request=" + encodeURIComponent(naturalQuery || activeFilters.join(", "))}
+                      className="v20-request-link"
+                    >
+                      Request a car like this
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>

@@ -4340,3 +4340,77 @@ body { font-size: 16px; line-height: 1.55; }
     height: 120px;
   }
 }
+
+
+/* === V20 foolproof live-inventory search states === */
+.v20-live-filter-note {
+  display: block;
+  margin-top: 5px;
+  color: var(--v3-muted);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.v20-request-car {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  margin-top: 18px;
+  border-top: 1px solid rgba(17,18,20,.10);
+  padding-top: 18px;
+}
+
+.v20-request-car strong,
+.v20-request-car span {
+  display: block;
+}
+
+.v20-request-car strong {
+  font-size: 13px;
+}
+
+.v20-request-car span {
+  margin-top: 4px;
+  color: var(--v3-muted);
+  font-size: 11px;
+}
+
+.v20-request-car > a,
+.v20-request-link {
+  display: inline-flex;
+  min-height: 42px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(17,18,20,.12);
+  border-radius: 10px;
+  background: #17191b;
+  padding: 0 14px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.v20-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 16px;
+}
+
+.v20-empty-actions .v3-primary-action {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .v20-request-car {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .v20-request-car > a,
+  .v20-request-link {
+    width: 100%;
+  }
+}

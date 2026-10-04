@@ -172,7 +172,7 @@ function featureSet(car: Car) {
   return new Set((car.features ?? []).map((feature) => feature.toLowerCase()));
 }
 
-export function parseSmartSearch(rawQuery: string): SmartSearchIntent {
+export function parseSmartSearch(rawQuery: string, liveCars: Car[] = []): SmartSearchIntent {
   const query = normalize(rawQuery);
   const understood: string[] = [];
   let minPrice: number | undefined;
@@ -263,14 +263,19 @@ export function parseSmartSearch(rawQuery: string): SmartSearchIntent {
   if (minYear) understood.push(minYear + " or newer");
   if (maxYear) understood.push(maxYear + " or older");
 
-  const make = manufacturerNames
-    .slice()
-    .sort((a, b) => b.length - a.length)
-    .find((brand) => containsPhrase(query, brand));
+  const liveMakes = [...new Set(liveCars.map((car) => car.make).filter(Boolean))];
+  const makeCandidates = [...new Set([...liveMakes, ...manufacturerNames])]
+    .sort((a, b) => b.length - a.length);
+  const make = makeCandidates.find((brand) => containsPhrase(query, brand));
   if (make) understood.push(make);
 
   let model: string | undefined;
-  const modelCandidates = make ? modelsByManufacturer[make] ?? [] : Object.values(modelsByManufacturer).flat();
+  const liveModels = liveCars
+    .filter((car) => !make || car.make === make)
+    .map((car) => car.model)
+    .filter(Boolean);
+  const catalogModels = make ? modelsByManufacturer[make] ?? [] : Object.values(modelsByManufacturer).flat();
+  const modelCandidates = [...new Set([...liveModels, ...catalogModels])];
   for (const candidate of modelCandidates.slice().sort((a, b) => b.length - a.length)) {
     const normalizedModel = normalize(candidate);
     if (/^\d{1,2}$/.test(normalizedModel)) {
@@ -512,7 +517,7 @@ function evaluateCar(car: Car, intent: SmartSearchIntent): SmartCarMatch {
 }
 
 export function runSmartCarSearch(cars: Car[], query: string): SmartSearchResult {
-  const intent = parseSmartSearch(query);
+  const intent = parseSmartSearch(query, cars);
   const evaluated = cars.map((car) => evaluateCar(car, intent));
 
   const exactMatches = evaluated
