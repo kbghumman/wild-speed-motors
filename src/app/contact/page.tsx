@@ -48,8 +48,8 @@ export default async function ContactPage({
                 </p>
               ) : requestedCar ? (
                 <p>
-                  We do not currently have to pretend this car is in stock. Your request is prefilled below
-                  so the showroom can follow it as a sourcing enquiry.
+                  That exact request is not currently in live stock. It is prefilled below so the showroom
+                  can follow it as a sourcing enquiry without making you start again.
                 </p>
               ) : (
                 <p>Ask about stock, test drives, trade-ins or finance. Your enquiry enters the dealer CRM so it can be followed through to an outcome.</p>
