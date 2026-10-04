@@ -74,7 +74,7 @@ export default async function HomePage() {
         </section>
 
         <PopularBrands cars={cars} />
-        <BudgetShowroom />
+        <BudgetShowroom cars={cars} />
 
         <section className="section v5-process-section">
           <div className="container">

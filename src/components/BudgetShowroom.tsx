@@ -1,47 +1,56 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { GarageBayArt } from "@/components/AutomotiveArt";
-import { budgetBays } from "@/data/budgetBays";
+import { budgetBays, getCarsForBudgetBay } from "@/data/budgetBays";
+import type { Car } from "@/data/cars";
 
 const variants = ["sedan", "suv", "sports", "classic"] as const;
 
-export default function BudgetShowroom() {
+function stockLabel(count: number) {
+  return count === 1 ? "1 live car" : count + " live cars";
+}
+
+export default function BudgetShowroom({ cars }: { cars: Car[] }) {
   const homepageBays = budgetBays.slice(0, 4);
 
   return (
-    <section className="section v3-budget-section">
+    <section className="section v19-budget-section">
       <div className="container">
-        <div className="v3-section-intro">
+        <div className="v19-budget-head">
           <div>
-            <p className="v3-kicker">Shop by budget</p>
-            <h2>Start with what you want to spend.</h2>
+            <span className="v19-budget-kicker">SHOP BY BUDGET</span>
+            <h2>Browse by budget.</h2>
           </div>
-          <div className="v3-section-intro-copy">
-            <p>
-              Every live vehicle is placed automatically into one non-overlapping
-              price range, so you can browse the stock that fits your budget
-              without sorting through everything first.
-            </p>
-            <Link href="/budget">See every price range <ArrowUpRight size={15} /></Link>
-          </div>
+
+          <Link href="/budget" className="v19-budget-all">
+            All price ranges <ArrowRight size={16} />
+          </Link>
         </div>
 
-        <div className="v3-budget-grid">
-          {homepageBays.map((bay, index) => (
-            <Link
-              key={bay.slug}
-              href={"/budget/" + bay.slug}
-              className={"v3-budget-card v3-budget-card-" + (index + 1)}
-            >
-              <GarageBayArt index={index} variant={variants[index]} />
-              <div className="v3-budget-content">
-                <span className="v3-mono">PRICE RANGE {String(index + 1).padStart(2, "0")}</span>
-                <strong>{bay.shortTitle}</strong>
-                <p>{bay.description}</p>
-                <span className="v3-card-link">Browse this range <ArrowUpRight size={15} /></span>
-              </div>
-            </Link>
-          ))}
+        <div className="v19-budget-grid">
+          {homepageBays.map((bay, index) => {
+            const count = getCarsForBudgetBay(bay.slug, cars).length;
+
+            return (
+              <Link
+                key={bay.slug}
+                href={"/budget/" + bay.slug}
+                className={"v19-budget-card v19-budget-card-" + (index + 1)}
+              >
+                <GarageBayArt index={index} variant={variants[index]} />
+
+                <div className="v19-budget-top">
+                  <span>RANGE {String(index + 1).padStart(2, "0")}</span>
+                  <span className="v19-budget-arrow"><ArrowUpRight size={17} /></span>
+                </div>
+
+                <div className="v19-budget-copy">
+                  <strong>{bay.shortTitle}</strong>
+                  <small>{stockLabel(count)}</small>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
