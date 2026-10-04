@@ -20,6 +20,10 @@ function stockLabel(count: number) {
   return count === 1 ? "1 live car" : count + " live cars";
 }
 
+function brandColorClass(brand: string) {
+  return "v14-brand-" + brand.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+}
+
 function sizeClass(count: number, rank: number) {
   if (count <= 0) return "v14-brand-small";
   if (rank === 0) return "v14-brand-xl";
@@ -55,7 +59,7 @@ export default function PopularBrands({ cars }: { cars: Car[] }) {
           {rankedBrands.map(({ brand, count }, rank) => (
             <Link
               href={"/cars?make=" + encodeURIComponent(brand)}
-              className={"v14-brand-card " + sizeClass(count, rank)}
+              className={"v14-brand-card " + sizeClass(count, rank) + " " + brandColorClass(brand)}
               key={brand}
             >
               <span className="v14-brand-rank">

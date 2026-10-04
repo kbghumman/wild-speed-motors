@@ -3016,3 +3016,123 @@ body { font-size: 16px; line-height: 1.55; }
     width: 50%;
   }
 }
+
+
+/* === V15 manufacturer identity colour treatments === */
+.v14-brand-card {
+  --brand-accent: #17191b;
+  --brand-soft: #f7f5ef;
+  --brand-soft-2: #fbfaf7;
+  background:
+    linear-gradient(145deg, var(--brand-soft) 0%, var(--brand-soft-2) 72%);
+}
+
+.v14-brand-card::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 4px;
+  background: var(--brand-accent);
+  opacity: .9;
+  transition: height .18s ease, opacity .18s ease;
+}
+
+.v14-brand-card:hover::after {
+  height: 7px;
+  opacity: 1;
+}
+
+.v14-brand-card:hover {
+  background:
+    linear-gradient(145deg, var(--brand-soft) 0%, #fff 80%);
+}
+
+.v14-brand-card .v14-brand-logo {
+  color: var(--brand-accent);
+}
+
+.v14-brand-card .v14-brand-copy span {
+  color: var(--brand-accent);
+}
+
+/* Brand-inspired palettes kept intentionally soft so stock counts and names stay readable. */
+.v14-brand-bmw {
+  --brand-accent: #0066b1;
+  --brand-soft: #eef6fb;
+  --brand-soft-2: #f8fbfd;
+}
+
+.v14-brand-mercedes-benz {
+  --brand-accent: #5f6368;
+  --brand-soft: #f0f1f2;
+  --brand-soft-2: #fafafa;
+}
+
+.v14-brand-audi {
+  --brand-accent: #bb0a30;
+  --brand-soft: #faeef1;
+  --brand-soft-2: #fff8f9;
+}
+
+.v14-brand-toyota {
+  --brand-accent: #eb0a1e;
+  --brand-soft: #fff0f1;
+  --brand-soft-2: #fff9f9;
+}
+
+.v14-brand-honda {
+  --brand-accent: #cc0000;
+  --brand-soft: #faeeee;
+  --brand-soft-2: #fff8f8;
+}
+
+.v14-brand-mitsubishi {
+  --brand-accent: #e60012;
+  --brand-soft: #fff0f1;
+  --brand-soft-2: #fff9f9;
+}
+
+.v14-brand-nissan {
+  --brand-accent: #c3002f;
+  --brand-soft: #faeef2;
+  --brand-soft-2: #fff8fa;
+}
+
+.v14-brand-subaru {
+  --brand-accent: #1d4f9a;
+  --brand-soft: #eef3fb;
+  --brand-soft-2: #f8fbff;
+}
+
+.v14-brand-mazda {
+  --brand-accent: #7a0019;
+  --brand-soft: #f6eef0;
+  --brand-soft-2: #fcf8f9;
+}
+
+.v14-brand-lexus {
+  --brand-accent: #32363a;
+  --brand-soft: #f0f1f1;
+  --brand-soft-2: #fafafa;
+}
+
+.v14-brand-mini {
+  --brand-accent: #1b1b1b;
+  --brand-soft: #f1f1ef;
+  --brand-soft-2: #fbfbf8;
+}
+
+.v14-brand-xl::before,
+.v14-brand-large::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  width: 220px;
+  height: 220px;
+  top: -110px;
+  right: -70px;
+  border-radius: 50%;
+  background: var(--brand-accent);
+  opacity: .045;
+  pointer-events: none;
+}
