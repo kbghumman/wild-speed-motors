@@ -2672,3 +2672,130 @@ body { font-size: 16px; line-height: 1.55; }
   position: relative;
   z-index: 1;
 }
+
+
+/* === V13 exact search first, smart search second === */
+.v13-search-stack {
+  background: #f6f3ee;
+  padding: 18px 0 30px;
+}
+
+.v13-exact-search .v4-search-panel,
+.v13-smart-search .smart-finder {
+  margin: 0;
+  border: 1px solid rgba(17,18,20,.1);
+  background: #fbfaf7;
+  box-shadow: 0 16px 42px rgba(17,18,20,.07);
+}
+
+.v13-exact-search .v4-search-panel {
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.v13-exact-search .v4-search-heading {
+  margin-bottom: 20px;
+}
+
+.v13-exact-search .v4-search-heading strong {
+  font-size: 22px;
+}
+
+.v13-exact-search .v4-search-grid {
+  grid-template-columns: 1.12fr 1.12fr .95fr .86fr .95fr auto;
+  gap: 12px;
+}
+
+.v13-exact-search .v4-search-button {
+  min-width: 116px;
+}
+
+.v13-search-divider {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 19px 4px;
+}
+
+.v13-search-divider > span {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(17,18,20,.14));
+}
+
+.v13-search-divider > span:last-child {
+  background: linear-gradient(90deg, rgba(17,18,20,.14), transparent);
+}
+
+.v13-search-divider strong {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid rgba(17,18,20,.11);
+  border-radius: 50%;
+  background: #fff;
+  color: #777a76;
+  font-family: var(--font-mono), monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.v13-smart-search .smart-finder {
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.v13-smart-search .smart-finder-intro {
+  margin-bottom: 18px;
+}
+
+.v13-smart-search .smart-finder-icon {
+  background: #ff613a;
+  color: #1a0c08;
+}
+
+.v13-smart-search .smart-finder-submit {
+  background: #17191b;
+}
+
+@media (max-width: 1100px) {
+  .v13-exact-search .v4-search-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .v13-exact-search .v4-search-button {
+    grid-column: auto;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .v13-search-stack {
+    padding-top: 14px;
+  }
+
+  .v13-exact-search .v4-search-panel,
+  .v13-smart-search .smart-finder {
+    border-radius: 17px;
+    padding: 18px;
+  }
+
+  .v13-exact-search .v4-search-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .v13-exact-search .v4-search-button {
+    width: 100%;
+  }
+
+  .v13-search-divider {
+    padding: 15px 2px;
+  }
+
+  .v13-search-divider strong {
+    width: 36px;
+    height: 36px;
+  }
+}

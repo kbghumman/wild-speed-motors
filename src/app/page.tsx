@@ -34,12 +34,22 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="v6-smart-wrap">
-          <div className="container"><SmartCarFinder /></div>
-        </section>
+        <section className="v13-search-stack">
+          <div className="container">
+            <div className="v13-exact-search">
+              <SearchPanel />
+            </div>
 
-        <section className="v3-search-wrap v6-filter-wrap">
-          <div className="container"><SearchPanel /></div>
+            <div className="v13-search-divider" aria-label="Alternative search method">
+              <span />
+              <strong>OR</strong>
+              <span />
+            </div>
+
+            <div className="v13-smart-search">
+              <SmartCarFinder />
+            </div>
+          </div>
         </section>
 
         <section className="v4-quick-actions">
