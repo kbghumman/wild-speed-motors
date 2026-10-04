@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { Car } from "@/data/cars";
 import { formatUSD } from "@/lib/currency";
@@ -11,171 +11,114 @@ import { trackEvent } from "@/lib/analytics/client";
 const NSX_BACKGROUND =
   "https://upload.wikimedia.org/wikipedia/commons/0/09/Honda_NSX_red.jpg";
 
-function windowedCars(cars: Car[], start: number, count: number) {
-  if (!cars.length) return [];
-  if (cars.length <= count) return cars;
-
-  return Array.from({ length: count }, (_, offset) => cars[(start + offset) % cars.length]);
-}
-
 export default function InventoryHeroCarousel({ cars }: { cars: Car[] }) {
-  const liveCars = useMemo(
-    () => cars.filter((car) => Boolean(car.image)),
+  const heroCars = useMemo(
+    () => cars.filter((car) => Boolean(car.image)).slice(0, 6),
     [cars],
   );
-
-  const [startIndex, setStartIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-
-  const visibleCars = useMemo(
-    () => windowedCars(liveCars, startIndex, 3),
-    [liveCars, startIndex],
-  );
+  const [index, setIndex] = useState(0);
+  const featured = heroCars[index];
 
   useEffect(() => {
-    if (liveCars.length <= 3 || paused) return;
+    if (heroCars.length <= 1) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotion) return;
+    const timer = window.setInterval(() => {
+      setIndex((current) => (current + 1) % heroCars.length);
+    }, 7000);
 
-    const interval = window.setInterval(() => {
-      setStartIndex((current) => (current + 1) % liveCars.length);
-    }, 5000);
-
-    return () => window.clearInterval(interval);
-  }, [liveCars.length, paused]);
-
-  function move(direction: 1 | -1) {
-    if (!liveCars.length) return;
-    setStartIndex((current) => (current + direction + liveCars.length) % liveCars.length);
-    trackEvent(direction > 0 ? "home_inventory_strip_next" : "home_inventory_strip_previous");
-  }
+    return () => window.clearInterval(timer);
+  }, [heroCars.length]);
 
   return (
-    <section
-      className="v9-home-hero"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
-    >
-      <div className="v9-hero-background" aria-hidden="true">
-        <Image
-          src={NSX_BACKGROUND}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          quality={90}
-        />
-        <div className="v9-hero-overlay" />
+    <section className="v10-home-hero">
+      <div className="v10-hero-bg" aria-hidden="true">
+        <Image src={NSX_BACKGROUND} alt="" fill priority quality={90} sizes="100vw" />
+        <div className="v10-hero-overlay" />
       </div>
 
-      <div className="container v9-hero-shell">
-        <div className="v9-hero-copy">
-          <h1>
-            <span>Browse our</span>
-            <em>live inventory.</em>
-          </h1>
+      <div className="container v10-hero-grid">
+        <div className="v10-hero-copy">
+          <span className="v10-hero-kicker">WILD SPEED MOTORS</span>
+          <h1>Find your <span>next car.</span></h1>
+          <p>
+            Live stock, clear pricing and direct showroom support — built to get
+            you from browsing to the right car quickly.
+          </p>
 
-          <Link
-            href="/cars"
-            className="v9-check-inventory"
-            onClick={() =>
-              trackEvent("home_hero_inventory_cta", {
-                live_inventory_count: cars.length,
-              })
-            }
-          >
-            <strong>CHECK INVENTORY</strong>
-            <ArrowRight size={31} />
-          </Link>
-        </div>
-
-        <div className="v9-hero-strip-wrap">
-          {liveCars.length > 3 && (
-            <button
-              type="button"
-              className="v9-strip-arrow v9-strip-arrow-left"
-              onClick={() => move(-1)}
-              aria-label="Previous inventory vehicles"
+          <div className="v10-hero-actions">
+            <Link
+              href="/cars"
+              className="v10-hero-primary"
+              onClick={() => trackEvent("home_hero_inventory_cta", { live_inventory_count: cars.length })}
             >
-              <ChevronLeft size={25} />
-            </button>
-          )}
-
-          <div className="v9-inventory-strip" aria-live="polite">
-            {visibleCars.map((car) => (
-              <Link
-                key={car.slug}
-                href={"/cars/" + car.slug}
-                className="v9-inventory-card"
-                onClick={() =>
-                  trackEvent(
-                    "home_hero_vehicle_open",
-                    {
-                      make: car.make,
-                      model: car.model,
-                      year: car.year,
-                      price: car.price,
-                      surface: "hero_inventory_strip",
-                    },
-                    { vehicleSlug: car.slug },
-                  )
-                }
-              >
-                <span className="v9-card-image">
-                  <Image
-                    src={car.image}
-                    alt={car.year + " " + car.make + " " + car.model}
-                    fill
-                    sizes="(max-width: 760px) 78vw, 30vw"
-                    quality={75}
-                  />
-                </span>
-
-                <span className="v9-card-copy">
-                  <span>
-                    <strong>{car.year} {car.make} {car.model}</strong>
-                    <small>{car.mileage.toLocaleString()} km · {formatUSD(car.price)}</small>
-                  </span>
-                  <ArrowRight size={17} />
-                </span>
-              </Link>
-            ))}
-
-            {!visibleCars.length && (
-              <Link href="/cars" className="v9-inventory-empty">
-                <span>Live inventory</span>
-                <strong>New stock will appear here automatically.</strong>
-                <ArrowRight size={18} />
-              </Link>
-            )}
+              Check inventory <ArrowRight size={18} />
+            </Link>
+            <Link href="/contact" className="v10-hero-secondary">Contact showroom</Link>
           </div>
 
-          {liveCars.length > 3 && (
-            <button
-              type="button"
-              className="v9-strip-arrow v9-strip-arrow-right"
-              onClick={() => move(1)}
-              aria-label="Next inventory vehicles"
-            >
-              <ChevronRight size={25} />
-            </button>
-          )}
+          <div className="v10-hero-stock">
+            <strong>{cars.length}</strong>
+            <span>{cars.length === 1 ? "live vehicle" : "live vehicles"} available now</span>
+          </div>
         </div>
 
-        <div className="v9-hero-progress" aria-hidden="true">
-          <span>{String(liveCars.length ? startIndex + 1 : 0).padStart(2, "0")}</span>
-          <div>
-            {Array.from({ length: Math.max(1, Math.min(liveCars.length, 6)) }, (_, index) => (
-              <i
-                key={index}
-                className={liveCars.length && startIndex % Math.max(1, Math.min(liveCars.length, 6)) === index ? "active" : ""}
-              />
-            ))}
-          </div>
-          <span>{String(liveCars.length).padStart(2, "0")}</span>
+        <div className="v10-featured-wrap">
+          {featured ? (
+            <Link
+              key={featured.slug}
+              href={"/cars/" + featured.slug}
+              className="v10-featured-card"
+              onClick={() =>
+                trackEvent(
+                  "home_hero_featured_open",
+                  { make: featured.make, model: featured.model, year: featured.year, price: featured.price },
+                  { vehicleSlug: featured.slug },
+                )
+              }
+            >
+              <div className="v10-featured-image">
+                <Image
+                  src={featured.image}
+                  alt={featured.year + " " + featured.make + " " + featured.model}
+                  fill
+                  sizes="(max-width: 920px) 92vw, 38vw"
+                  quality={80}
+                />
+                <span>Featured live stock</span>
+              </div>
+
+              <div className="v10-featured-copy">
+                <small>{featured.year} · {featured.mileage.toLocaleString()} km</small>
+                <h2>{featured.make} {featured.model}</h2>
+                {featured.trim && <p>{featured.trim}</p>}
+                <div className="v10-featured-bottom">
+                  <strong>{formatUSD(featured.price)}</strong>
+                  <span>View vehicle <ArrowRight size={14} /></span>
+                </div>
+              </div>
+            </Link>
+          ) : (
+            <div className="v10-featured-card v10-featured-empty">
+              <span>Live inventory</span>
+              <h2>New stock will appear here automatically.</h2>
+              <Link href="/cars">Browse inventory <ArrowRight size={14} /></Link>
+            </div>
+          )}
+
+          {heroCars.length > 1 && (
+            <div className="v10-featured-dots">
+              {heroCars.map((car, dot) => (
+                <button
+                  key={car.slug}
+                  type="button"
+                  className={dot === index ? "active" : ""}
+                  onClick={() => setIndex(dot)}
+                  aria-label={"Show " + car.make + " " + car.model}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
