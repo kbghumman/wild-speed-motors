@@ -82,7 +82,7 @@ export default function SearchPanel() {
             value={selections.budget}
             onChange={(event) => setSelection("budget", event.target.value)}
           >
-            <option value="">Any live-stock price</option>
+            <option value="">Any price</option>
             {data.facets.budget.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label} ({option.count})
@@ -116,7 +116,7 @@ export default function SearchPanel() {
             value={selections.body}
             onChange={(event) => setSelection("body", event.target.value)}
           >
-            <option value="">Any live body type</option>
+            <option value="">Any body type</option>
             {data.facets.body.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label} ({option.count})
