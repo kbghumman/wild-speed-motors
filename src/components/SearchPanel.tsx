@@ -2,37 +2,11 @@
 
 import Link from "next/link";
 import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
-import { manufacturerNames } from "@/data/manufacturers";
 import { trackEvent } from "@/lib/analytics/client";
+import { useInventoryFacets } from "@/hooks/useInventoryFacets";
 
 export default function SearchPanel() {
-  const [make, setMake] = useState("");
-  const [model, setModel] = useState("");
-  const [models, setModels] = useState<string[]>([]);
-  const [modelsLoading, setModelsLoading] = useState(false);
-
-  useEffect(() => {
-    if (!make) {
-      setModels([]);
-      setModel("");
-      return;
-    }
-
-    const controller = new AbortController();
-    setModelsLoading(true);
-    setModel("");
-
-    fetch("/api/models?make=" + encodeURIComponent(make), { signal: controller.signal })
-      .then((response) => response.json())
-      .then((data: { models?: string[] }) => setModels(data.models ?? []))
-      .catch((error) => {
-        if (error.name !== "AbortError") setModels([]);
-      })
-      .finally(() => setModelsLoading(false));
-
-    return () => controller.abort();
-  }, [make]);
+  const { selections, setSelection, data, loading } = useInventoryFacets();
 
   return (
     <form
@@ -47,70 +21,121 @@ export default function SearchPanel() {
           budget: String(form.get("budget") || ""),
           seats: String(form.get("seats") || ""),
           body: String(form.get("body") || ""),
+          live_result_count: data.total,
         });
       }}
     >
       <div className="v4-search-heading">
-        <div><strong>Search with exact fields</strong></div>
+        <div>
+          <strong>Search live stock</strong>
+          <small className="v20-live-filter-note">
+            {loading ? "Checking current inventory…" : data.total + " cars match these choices"}
+          </small>
+        </div>
         <Link href="/cars">See all cars →</Link>
       </div>
 
       <div className="v4-search-grid">
         <div className="field">
           <label htmlFor="home-make">Make</label>
-          <select id="home-make" name="make" value={make} onChange={(event) => setMake(event.target.value)}>
-            <option value="">All makes</option>
-            {manufacturerNames.map((manufacturer) => <option key={manufacturer} value={manufacturer}>{manufacturer}</option>)}
+          <select
+            id="home-make"
+            name="make"
+            value={selections.make}
+            onChange={(event) => setSelection("make", event.target.value)}
+          >
+            <option value="">All available makes</option>
+            {data.facets.make.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="field">
           <label htmlFor="home-model">Model</label>
-          <select id="home-model" name="model" value={model} onChange={(event) => setModel(event.target.value)} disabled={!make || modelsLoading}>
-            <option value="">{modelsLoading ? "Loading models…" : make ? "All models" : "Choose a make first"}</option>
-            {models.map((item) => <option key={item} value={item}>{item}</option>)}
+          <select
+            id="home-model"
+            name="model"
+            value={selections.model}
+            onChange={(event) => setSelection("model", event.target.value)}
+            disabled={!selections.make || loading}
+          >
+            <option value="">
+              {!selections.make
+                ? "Choose a make first"
+                : data.facets.model.length
+                  ? "All live models"
+                  : "No live models"}
+            </option>
+            {data.facets.model.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="field">
           <label htmlFor="home-budget">Max budget</label>
-          <select id="home-budget" name="budget" defaultValue="">
-            <option value="">Any price</option>
-            <option value="2500">Up to $2,500</option>
-            <option value="5000">Up to $5,000</option>
-            <option value="10000">Up to $10,000</option>
-            <option value="20000">Up to $20,000</option>
-            <option value="30000">Up to $30,000</option>
-            <option value="30000plus">$30,000+</option>
+          <select
+            id="home-budget"
+            name="budget"
+            value={selections.budget}
+            onChange={(event) => setSelection("budget", event.target.value)}
+          >
+            <option value="">Any live-stock price</option>
+            {data.facets.budget.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="field">
           <label htmlFor="home-seats">Minimum seats</label>
-          <select id="home-seats" name="seats" defaultValue="">
+          <select
+            id="home-seats"
+            name="seats"
+            value={selections.seats}
+            onChange={(event) => setSelection("seats", event.target.value)}
+          >
             <option value="">Any seating</option>
-            <option value="4">4+</option>
-            <option value="5">5+</option>
-            <option value="7">7+</option>
-            <option value="8">8+</option>
+            {data.facets.seats.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} seats ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="field">
           <label htmlFor="home-body">Body type</label>
-          <select id="home-body" name="body" defaultValue="">
-            <option value="">Any body</option>
-            <option value="SUV">SUV</option>
-            <option value="4x4">4x4</option>
-            <option value="Hatchback">Hatchback</option>
-            <option value="Sedan">Sedan</option>
-            <option value="Coupe">Coupe</option>
-            <option value="Minivan">Minivan</option>
-            <option value="Kei">Kei</option>
+          <select
+            id="home-body"
+            name="body"
+            value={selections.body}
+            onChange={(event) => setSelection("body", event.target.value)}
+          >
+            <option value="">Any live body type</option>
+            {data.facets.body.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
-        <button className="search-button v4-search-button" type="submit"><Search size={17} />Search</button>
+        <button
+          className="search-button v4-search-button"
+          type="submit"
+          disabled={loading || data.total === 0}
+        >
+          <Search size={17} />
+          {loading ? "Checking…" : "Show " + data.total}
+        </button>
       </div>
     </form>
   );

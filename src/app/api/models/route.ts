@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
-import { getModelsForManufacturer } from "@/data/models";
+import { getPublicCars } from "@/lib/inventory";
 
-export function GET(request: Request) {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const make = searchParams.get("make")?.trim() ?? "";
-  const models = make ? getModelsForManufacturer(make) : [];
+
+  const cars = await getPublicCars();
+  const models = make
+    ? [...new Set(cars.filter((car) => car.make === make).map((car) => car.model).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b))
+    : [];
 
   return NextResponse.json(
     { models },
-    { headers: { "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800" } },
+    { headers: { "Cache-Control": "no-store, max-age=0" } },
   );
 }

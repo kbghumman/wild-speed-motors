@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { SlidersHorizontal } from "lucide-react";
-import { useEffect, useState } from "react";
-import { manufacturerNames } from "@/data/manufacturers";
 import { trackEvent } from "@/lib/analytics/client";
+import { useInventoryFacets } from "@/hooks/useInventoryFacets";
 
 export type InventoryFilterValues = {
   make: string;
@@ -19,50 +18,29 @@ export type InventoryFilterValues = {
 
 export default function InventoryFilters({
   initial,
-  initialModels,
   naturalQuery = "",
 }: {
   initial: InventoryFilterValues;
-  initialModels: string[];
   naturalQuery?: string;
 }) {
-  const [make, setMake] = useState(initial.make);
-  const [model, setModel] = useState(initial.model);
-  const [models, setModels] = useState(initialModels);
-  const [loadingModels, setLoadingModels] = useState(false);
-
-  useEffect(() => {
-    if (!make) {
-      setModels([]);
-      setModel("");
-      return;
-    }
-
-    if (make === initial.make && initialModels.length) {
-      setModels(initialModels);
-      return;
-    }
-
-    const controller = new AbortController();
-    setLoadingModels(true);
-    setModel("");
-
-    fetch("/api/models?make=" + encodeURIComponent(make), { signal: controller.signal })
-      .then((response) => response.json())
-      .then((data: { models?: string[] }) => setModels(data.models ?? []))
-      .catch((error) => {
-        if (error.name !== "AbortError") setModels([]);
-      })
-      .finally(() => setLoadingModels(false));
-
-    return () => controller.abort();
-  }, [make, initial.make, initialModels]);
+  const { selections, setSelection, data, loading } = useInventoryFacets({
+    make: initial.make,
+    model: initial.model,
+    body: initial.body,
+    transmission: initial.transmission,
+    fuel: initial.fuel,
+    budget: initial.budget,
+    seats: initial.seats,
+  });
 
   return (
     <aside className="filters v4-filters">
       <div className="v4-filter-heading">
         <SlidersHorizontal size={18} />
-        <div><strong>Filter cars</strong><span>Narrow the live inventory</span></div>
+        <div>
+          <strong>Filter live cars</strong>
+          <span>{loading ? "Checking stock…" : data.total + " currently match"}</span>
+        </div>
       </div>
 
       <form
@@ -80,6 +58,7 @@ export default function InventoryFilters({
             budget: String(form.get("budget") || ""),
             sort: String(form.get("sort") || ""),
             refinement: Boolean(naturalQuery),
+            live_result_count: data.total,
           });
         }}
       >
@@ -87,59 +66,123 @@ export default function InventoryFilters({
 
         <div className="filter-group">
           <label htmlFor="filter-make">Make</label>
-          <select id="filter-make" name="make" value={make} onChange={(event) => setMake(event.target.value)}>
-            <option value="">All makes</option>
-            {manufacturerNames.map((manufacturer) => <option key={manufacturer} value={manufacturer}>{manufacturer}</option>)}
+          <select
+            id="filter-make"
+            name="make"
+            value={selections.make}
+            onChange={(event) => setSelection("make", event.target.value)}
+          >
+            <option value="">All available makes</option>
+            {data.facets.make.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="filter-group">
           <label htmlFor="filter-model">Model</label>
-          <select id="filter-model" name="model" value={model} onChange={(event) => setModel(event.target.value)} disabled={!make || loadingModels}>
-            <option value="">{loadingModels ? "Loading models…" : make ? "All models" : "Choose a make first"}</option>
-            {models.map((item) => <option key={item} value={item}>{item}</option>)}
+          <select
+            id="filter-model"
+            name="model"
+            value={selections.model}
+            onChange={(event) => setSelection("model", event.target.value)}
+            disabled={!selections.make || loading}
+          >
+            <option value="">
+              {!selections.make ? "Choose a make first" : "All live models"}
+            </option>
+            {data.facets.model.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="filter-group">
           <label htmlFor="filter-body">Body type</label>
-          <select id="filter-body" name="body" defaultValue={initial.body}>
-            <option value="">Any body type</option>
-            <option>SUV</option><option>4x4</option><option>Hatchback</option><option>Sedan</option><option>Coupe</option><option>Roadster</option><option>Wagon</option><option>Minivan</option><option>Kei</option><option>Pickup</option><option>Van</option>
+          <select
+            id="filter-body"
+            name="body"
+            value={selections.body}
+            onChange={(event) => setSelection("body", event.target.value)}
+          >
+            <option value="">Any live body type</option>
+            {data.facets.body.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="filter-group">
           <label htmlFor="filter-transmission">Transmission</label>
-          <select id="filter-transmission" name="transmission" defaultValue={initial.transmission}>
-            <option value="">Any transmission</option><option>Automatic</option><option>Manual</option><option>CVT</option><option>DCT</option>
+          <select
+            id="filter-transmission"
+            name="transmission"
+            value={selections.transmission}
+            onChange={(event) => setSelection("transmission", event.target.value)}
+          >
+            <option value="">Any live transmission</option>
+            {data.facets.transmission.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="filter-group">
           <label htmlFor="filter-fuel">Fuel</label>
-          <select id="filter-fuel" name="fuel" defaultValue={initial.fuel}>
-            <option value="">Any fuel</option><option>Petrol</option><option>Diesel</option><option>Hybrid</option><option>Plug-in Hybrid</option><option>Electric</option>
+          <select
+            id="filter-fuel"
+            name="fuel"
+            value={selections.fuel}
+            onChange={(event) => setSelection("fuel", event.target.value)}
+          >
+            <option value="">Any live fuel type</option>
+            {data.facets.fuel.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="filter-group">
           <label htmlFor="filter-seats">Minimum seats</label>
-          <select id="filter-seats" name="seats" defaultValue={initial.seats}>
+          <select
+            id="filter-seats"
+            name="seats"
+            value={selections.seats}
+            onChange={(event) => setSelection("seats", event.target.value)}
+          >
             <option value="">Any seating</option>
-            <option value="2">2+</option>
-            <option value="4">4+</option>
-            <option value="5">5+</option>
-            <option value="7">7+</option>
-            <option value="8">8+</option>
+            {data.facets.seats.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} seats ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="filter-group">
           <label htmlFor="filter-budget">Max price</label>
-          <select id="filter-budget" name="budget" defaultValue={initial.budget}>
-            <option value="">Any price</option>
-            <option value="2500">$2,500</option><option value="5000">$5,000</option><option value="10000">$10,000</option><option value="20000">$20,000</option><option value="30000">$30,000</option><option value="40000">$40,000</option><option value="30000plus">$30,000+</option>
+          <select
+            id="filter-budget"
+            name="budget"
+            value={selections.budget}
+            onChange={(event) => setSelection("budget", event.target.value)}
+          >
+            <option value="">Any live-stock price</option>
+            {data.facets.budget.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label} ({option.count})
+              </option>
+            ))}
           </select>
         </div>
 
@@ -155,8 +198,12 @@ export default function InventoryFilters({
           </select>
         </div>
 
-        <button type="submit" className="v4-filter-apply">Apply filters</button>
-        <Link href="/cars" className="v4-filter-clear">Clear all</Link>
+        <button type="submit" className="v4-filter-apply" disabled={loading || data.total === 0}>
+          {loading ? "Checking stock…" : "Show " + data.total + " cars"}
+        </button>
+        <Link href={naturalQuery ? "/cars?q=" + encodeURIComponent(naturalQuery) : "/cars"} className="v4-filter-clear">
+          Clear filters
+        </Link>
       </form>
     </aside>
   );
