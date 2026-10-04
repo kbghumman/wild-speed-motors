@@ -35,8 +35,7 @@ export default function PopularBrands({ cars }: { cars: Car[] }) {
       <div className="container">
         <div className="v3-section-intro">
           <div>
-            <p className="v3-kicker">Browse by manufacturer</p>
-            <h2>Know the badge? Start there.</h2>
+            <h2>Browse by manufacturer.</h2>
           </div>
           <div className="v3-section-intro-copy">
             <p>
