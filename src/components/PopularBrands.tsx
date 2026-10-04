@@ -16,11 +16,15 @@ const popularBrands = [
   "MINI",
 ];
 
-const featured = popularBrands.slice(0, 4);
-const shelf = popularBrands.slice(4);
-
 function stockLabel(count: number) {
   return count === 1 ? "1 live car" : count + " live cars";
+}
+
+function sizeClass(count: number, rank: number) {
+  if (count <= 0) return "v14-brand-small";
+  if (rank === 0) return "v14-brand-xl";
+  if (rank <= 2) return "v14-brand-large";
+  return "v14-brand-medium";
 }
 
 export default function PopularBrands({ cars }: { cars: Car[] }) {
@@ -30,52 +34,43 @@ export default function PopularBrands({ cars }: { cars: Car[] }) {
     counts.set(car.make, (counts.get(car.make) ?? 0) + 1);
   }
 
+  const rankedBrands = popularBrands
+    .map((brand, originalIndex) => ({
+      brand,
+      count: counts.get(brand) ?? 0,
+      originalIndex,
+    }))
+    .sort((a, b) => b.count - a.count || a.originalIndex - b.originalIndex);
+
   return (
-    <section className="section v3-brands-section">
+    <section className="section v3-brands-section v14-brands-section">
       <div className="container">
-        <div className="v3-section-intro">
+        <div className="v3-section-intro v14-brand-heading">
           <div>
             <h2>Browse by manufacturer.</h2>
           </div>
         </div>
 
-        <div className="v3-brand-stage v4-brand-stage">
-          <div className="v3-brand-featured">
-            {featured.map((brand, index) => {
-              const count = counts.get(brand) ?? 0;
+        <div className="v14-brand-grid">
+          {rankedBrands.map(({ brand, count }, rank) => (
+            <Link
+              href={"/cars?make=" + encodeURIComponent(brand)}
+              className={"v14-brand-card " + sizeClass(count, rank)}
+              key={brand}
+            >
+              <span className="v14-brand-rank">
+                {String(rank + 1).padStart(2, "0")}
+              </span>
 
-              return (
-                <Link
-                  href={"/cars?make=" + encodeURIComponent(brand)}
-                  className="v3-brand-feature v4-brand-feature v5-brand-feature"
-                  key={brand}
-                >
-                  <BrandLogo brand={brand} className="v5-brand-watermark" />
-                  <span className="v3-brand-index">0{index + 1}</span>
-                  <div className="v5-brand-copy">
-                    <strong>{brand}</strong>
-                    <small>{stockLabel(count)} · Browse inventory →</small>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+              <BrandLogo brand={brand} className="v14-brand-logo" />
 
-          <div className="v3-brand-shelf v4-brand-shelf">
-            {shelf.map((brand) => {
-              const count = counts.get(brand) ?? 0;
-
-              return (
-                <Link href={"/cars?make=" + encodeURIComponent(brand)} key={brand}>
-                  <BrandLogo brand={brand} className="v5-brand-shelf-logo" />
-                  <span className="v5-brand-shelf-copy">
-                    <strong>{brand}</strong>
-                    <small>{stockLabel(count)}</small>
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
+              <div className="v14-brand-copy">
+                <strong>{brand}</strong>
+                <small>{stockLabel(count)}</small>
+                <span>Browse inventory →</span>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </section>
