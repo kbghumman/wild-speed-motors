@@ -76,46 +76,6 @@ export default async function HomePage() {
         <PopularBrands cars={cars} />
         <BudgetShowroom cars={cars} />
 
-        <section className="section v5-process-section">
-          <div className="container">
-            <div className="v3-section-intro">
-              <div>
-                <p className="v3-kicker">From screen to showroom</p>
-                <h2>A simple way to buy.</h2>
-              </div>
-              <div className="v3-section-intro-copy">
-                <p>
-                  Use the website to narrow the choice first. When a car looks
-                  right, contact us to confirm the details and availability
-                  before making the trip.
-                </p>
-              </div>
-            </div>
-
-            <div className="v5-process-grid">
-              <div>
-                <span>01</span>
-                <strong>Browse live stock</strong>
-                <p>Filter by make, model, body type and budget, or start with a manufacturer or collection.</p>
-              </div>
-              <div>
-                <span>02</span>
-                <strong>Ask about the car</strong>
-                <p>Open the listing, review the gallery and specifications, then ask about availability, finance or a trade-in.</p>
-              </div>
-              <div>
-                <span>03</span>
-                <strong>Plan your visit</strong>
-                <p>Confirm the vehicle first, then arrange the right time to see it and discuss the next step with the showroom.</p>
-              </div>
-            </div>
-
-            <p className="v5-availability-note">
-              Live inventory can change. Please confirm availability before travelling to see a vehicle.
-            </p>
-          </div>
-        </section>
-
         <section className="section v3-arrivals-section">
           <div className="container">
             <div className="v3-section-intro">
