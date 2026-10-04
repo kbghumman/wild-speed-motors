@@ -51,7 +51,7 @@ export default function SearchPanel() {
       }}
     >
       <div className="v4-search-heading">
-        <div><span className="v3-mono">PREFER FILTERS?</span><strong>Search with exact fields</strong></div>
+        <div><strong>Search with exact fields</strong></div>
         <Link href="/cars">See all cars →</Link>
       </div>
 
