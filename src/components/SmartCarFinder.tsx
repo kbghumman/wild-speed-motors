@@ -103,8 +103,8 @@ export default function SmartCarFinder({
             <span className="v3-mono">SMART CAR FINDER</span>
             <strong>Describe the car you need.</strong>
             <p>
-              Use normal language. We understand clues about budget, people,
-              mileage, body style, fuel, transmission, drivetrain and equipment.
+              Search the cars that are actually live now. If nothing matches exactly,
+              we show the closest available alternatives instead of fake catalogue results.
             </p>
           </div>
         </div>
