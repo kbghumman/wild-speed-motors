@@ -1,19 +1,16 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  BadgeCheck,
   BadgeDollarSign,
   CarFront,
   CircleDollarSign,
-  MapPin,
   Repeat2,
-  ShieldCheck,
 } from "lucide-react";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import SearchPanel from "@/components/SearchPanel";
 import SmartCarFinder from "@/components/SmartCarFinder";
+import InventoryHeroCarousel from "@/components/InventoryHeroCarousel";
 import CarCard from "@/components/CarCard";
 import PopularBrands from "@/components/PopularBrands";
 import BudgetShowroom from "@/components/BudgetShowroom";
@@ -30,55 +27,7 @@ export default async function HomePage() {
     <>
       <Header />
       <main>
-        <section className="v3-hero v4-hero">
-          <Image
-            src="https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=2200&q=82"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            quality={75}
-            className="v4-hero-image"
-          />
-          <div className="v4-hero-overlay" />
-
-          <div className="container v3-hero-grid">
-            <div className="v3-hero-copy">
-              <span className="v3-hero-context">
-                <MapPin size={14} />
-                Japan-based used cars · Prices in USD
-              </span>
-              <p className="v3-kicker v3-hero-kicker">Wild Speed Motors / Japan</p>
-              <h1>
-                Buy your next car
-                <span>with less guesswork.</span>
-              </h1>
-              <p className="v3-hero-lede">
-                Browse live stock, compare clear USD pricing, review the vehicle
-                details, and contact the showroom before you travel. Built for
-                U.S. service members and international drivers in Japan.
-              </p>
-              <div className="v3-hero-actions">
-                <Link href="/cars" className="v3-primary-action">
-                  Browse live cars <ArrowRight size={17} />
-                </Link>
-                <Link href="/budget" className="v3-secondary-action">
-                  Shop by budget
-                </Link>
-              </div>
-              <div className="v3-hero-proof">
-                <span><BadgeCheck size={15} /> Live showroom inventory</span>
-                <span><CircleDollarSign size={15} /> Customer-facing USD prices</span>
-                <span><ShieldCheck size={15} /> Direct vehicle enquiries</span>
-              </div>
-            </div>
-            <div className="v3-hero-index" aria-hidden="true">
-              <span className="v3-hero-index-number">01</span>
-              <span className="v3-hero-index-line" />
-              <span className="v3-hero-index-copy">USED CARS / JAPAN</span>
-            </div>
-          </div>
-        </section>
+        <InventoryHeroCarousel cars={cars} />
 
         <section className="v6-smart-wrap">
           <div className="container"><SmartCarFinder /></div>
