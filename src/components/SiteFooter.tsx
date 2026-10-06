@@ -13,7 +13,7 @@ export default function SiteFooter() {
         </div>
         <div>
           <h4>Shop</h4>
-          <p><Link href="/cars">Used cars</Link><br /><Link href="/budget">Browse by budget</Link><br /><Link href="/brands">Brands</Link><br /><Link href="/collections">Collections</Link></p>
+          <p><Link href="/cars">Used cars</Link><br /><Link href="/budget">Browse by budget</Link><br /><Link href="/collections">Collections</Link></p>
         </div>
         <div>
           <h4>Services</h4>
