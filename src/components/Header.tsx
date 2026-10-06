@@ -14,7 +14,6 @@ import {
 const primary = [
   { href: "/cars", label: "Cars" },
   { href: "/budget", label: "By budget" },
-  { href: "/brands", label: "Brands" },
   { href: "/finance", label: "Finance" },
   { href: "/sell", label: "Sell / trade" },
 ];
